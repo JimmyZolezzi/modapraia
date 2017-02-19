@@ -1,0 +1,143 @@
+@CHARSET "UTF-8";
+
+.fontePadrao{
+	color: black;
+	font: normal;
+	font-family: 'Anton', sans-serif;;
+	font-size: 1.3em;
+}
+
+.textoVivi{
+	
+	color: black !important;
+	font-size: 1.2em !important;
+	font: normal !important;
+	font-family: 'Raleway', sans-serif;
+}
+
+.caminhoPao{
+	
+	color: black !important;
+	font-size: 1.2em !important;
+	font: normal !important;
+	font-family: 'Raleway', sans-serif;
+	border-color: rgb(221, 221, 221);
+	border-style: solid;
+	border-width: 1px;
+;
+}
+.descricaoProduto{
+	
+	color: black !important;
+	font-size: 1.5em !important;
+	font: normal !important;
+	font-family: 'Raleway', sans-serif;
+	
+}
+#carrinho > li > a{
+	color: black;
+}
+#carrinho > li > a:focus {
+	color: black;
+	background-color: #44b0d4 !important;
+}
+#carrinho > li:nth-child(odd) {
+  background: #FFFFFF !important;
+  color: black !important;
+}
+#carrinho > li:nth-child(even) {
+  background: #FFFFFF !important;
+  color: black !important;	
+}
+.textoVivi H1{
+	color: #1E90FF;
+}
+
+.textoVivi H2{
+	color: #1E90FF;
+}
+
+.textoVivi H3{
+	color: #1E90FF;
+}
+
+.textoVivi H4{
+	color: #1E90FF;
+}
+
+.camposFormulario{
+	font-size: 1.3em;
+	border-width: thin;
+	border-style: solid;
+	border-color: #007FFF;
+}
+
+.botaoVivi {
+	font-size: 1.3em;
+	color: white;
+	background-color: #007FFF;
+	height: 2em;
+	border: 0;
+	font: normal !important;
+	font-family: sans-serif !important;
+}
+
+#logoVivi{
+	color: white !important;
+	background-color:#000066 !important;
+	font-weight: bold;
+	font-size: 1.4em;
+	font-family: sans-serif;
+	
+	
+	
+}
+
+.imagemProduto :before,
+.imagemProduto:after {
+   content: " ";
+   display: table-cell;
+   padding: 2px;
+}
+
+.imagemProduto:after {
+   clear: both;
+}
+
+.imagemProduto {
+   *zoom: 1;
+}
+
+#botaoMenuMobile{
+	text-align: center !important;
+	width: 5em !important;
+	background-color: #4169E1;
+	color: #FFFFFF;
+	float: left;
+	
+}
+
+.labelFormulario{
+	font-weight: bold;
+	margin: 0.1em;
+	padding-top: 0.5em;
+}
+
+.labelInputFormulario{
+	height: 2em;
+	font-size: 1em;
+	width: 100%;
+	border-width: thin;
+	border-style: solid;
+	border-color: #007FFF;
+	padding-right: 0.2em;
+	padding-left: 0.2em;
+	border-radius: 0 !important;
+}
+
+
+
+.fieldFormulario{
+
+	
+}
