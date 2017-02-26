@@ -1,5 +1,6 @@
 package moda.praia.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import moda.praia.controller.converter.ConverterImagemProduto;
@@ -13,6 +14,7 @@ import moda.praia.modulo.jsonview.Views.Public;
 import moda.praia.modulo.produtos.ProdutoBusiness;
 import moda.praia.modulo.produtos.bean.Categoria;
 import moda.praia.modulo.produtos.bean.ImagemProduto;
+import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 import moda.praia.modulo.produtos.bean.TipoMedida;
@@ -20,6 +22,7 @@ import moda.praia.util.StatusRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -58,12 +61,17 @@ public class ProdutoController {
 		binder.setValidator(validator);
 		binder.registerCustomEditor(Categoria.class, categoriaEditor);
 		binder.registerCustomEditor(Subcategoria.class, subcategoriaEditor);
-		binder.registerCustomEditor(TipoMedida.class, tipoMedidaEditor);
+//		binder.registerCustomEditor(TipoMedida.class, tipoMedidaEditor);
 	}
 
 	@RequestMapping(value = "/cadastro-produto", method = RequestMethod.GET)
 	public String handleRequest(Model model) {
 		FormProduto formProduto = new FormProduto(new Produto());
+		formProduto.setQuantidade(1);
+		ItemProduto itemProduto = new ItemProduto();
+		List<ItemProduto> itensProduto = new ArrayList<ItemProduto>();
+		itensProduto.add(itemProduto);
+		formProduto.setItensProduto(itensProduto);
 		model.addAttribute("produtoForm",formProduto);
 		populateDefaultModel(model,null);
 		model.addAttribute("foto1", null);
@@ -157,7 +165,38 @@ public class ProdutoController {
 		return "pages/cadastro-produto";
 	}
 	
-	
+	@RequestMapping(value = "/produto/addItem", method = RequestMethod.POST)
+	public String adicionarProdutoItem(@ModelAttribute("produtoForm")FormProduto formProduto,BindingResult result, Model model){
+		int quantidade = formProduto.getQuantidade();
+		
+		if(formProduto.getItensProduto()==null){
+			formProduto.setItensProduto(new ArrayList<ItemProduto>());
+		}
+		
+		List<ItemProduto> itensProduto = formProduto.getItensProduto();
+		int quantidadeRegistrado = itensProduto.size();
+		//Aumentar quantidade
+		if(quantidade > quantidadeRegistrado){
+			int quantidadeAumentar = quantidade - quantidadeRegistrado;
+			
+			for(int i =0;i<quantidadeAumentar;i++){
+				ItemProduto itemProduto = new ItemProduto();
+				itensProduto.add(itemProduto);
+			}
+			
+		}
+		//diminuir quantidade
+		if(quantidade < quantidadeRegistrado){
+			int quantidadeDiminuir = quantidadeRegistrado - quantidade;
+			for(int i =0;i<quantidadeDiminuir;i++){
+				itensProduto.remove(quantidadeDiminuir + i);
+			}
+		}
+		formProduto.setQuantidade(itensProduto.size());
+		populateDefaultModel(model,formProduto);
+		
+		return "pages/cadastro-produto";
+	}
 	
 	@RequestMapping(value = "/produto/remover", method = RequestMethod.GET)
 	@JsonView(Public.class)
@@ -205,7 +244,7 @@ public class ProdutoController {
 	@JsonView(Public.class)
 	@ResponseBody @RequestMapping(value="pesquisa/categoria/onChange", method = RequestMethod.GET)
 	public List<Subcategoria> onChangeCategoria(@RequestParam("categoria") Categoria categoria, Model model){
-		populateDefaultModel(model,null);
+
 		return produtoBusiness.pesquisarSubcategoria(categoria);
 		
 	}

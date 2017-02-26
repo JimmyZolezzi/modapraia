@@ -18,7 +18,7 @@
 
     <!-- Custom CSS -->
     <link href="<c:url value="/css/sb-admin.css" />" rel="stylesheet">
-
+	<link href="<c:url value="/css/site/moda-praia-adm.css" />" rel="stylesheet">
     <!-- Morris Charts CSS -->
     <link href="<c:url value="/css/plugins/morris.css" />" rel="stylesheet">
 

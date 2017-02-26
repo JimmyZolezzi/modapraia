@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -40,7 +40,19 @@
 			</div>
 	  	</div>
 	</div>
-	
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title" >Pe&ccedil;as</h3>
+		</div>
+	 	<div class="panel-body">
+ 			<c:forEach var="itemProduto" items="${produto.itensProduto}" >
+	 			<div class="form-group ">
+	 				${itemProduto.nome} - ${itemProduto.tipoMedida.nome}
+				</div>
+ 			</c:forEach>	
+		</div>		
+	</div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title" >Fotos</h3>

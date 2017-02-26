@@ -154,6 +154,17 @@
               </ul>
           </li>
           <li>
+              <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i>Estoque<i class="fa fa-fw fa-caret-down"></i></a>
+              <ul id="demo" class="collapse">
+                  <li>
+                      <a href="<c:url value="/#" />">Entrada</a>
+                  </li>
+                  <li>
+                      <a href="<c:url value="/#" />">Consulta</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
               <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
           </li>
           <li>

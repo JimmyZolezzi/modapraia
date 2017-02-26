@@ -23,8 +23,6 @@ public class ProdutoFormValidator implements Validator {
 		FormProduto formProduto = (FormProduto) target;
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "descricao", "NotEmpty.produtoForm.descricao");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "categoria", "NotEmpty.produtoForm.categoria");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "subcategoria", "NotEmpty.produtoForm.subcategoria");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tipoMedida", "NotEmpty.produtoForm.tipoMedida");
 		
 		if(formProduto != null){
 			if(formProduto.getValor() == null || formProduto.getValor().doubleValue() < 0){
