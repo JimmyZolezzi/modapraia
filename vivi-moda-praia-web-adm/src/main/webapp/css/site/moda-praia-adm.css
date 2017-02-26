@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+.none{
+	
+	display: none;
+}
+
+.camposFormulario{
+	font-size: 1.3em;
+	border-width: thin;
+	border-style: solid;
+	border-color: #007FFF;
+}
