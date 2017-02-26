@@ -82,6 +82,12 @@ public class Produto {
 	@OneToMany(cascade={CascadeType.REFRESH}, fetch=FetchType.LAZY)
 	@JsonIgnore
 	private List<Estoque> estoques;
+	@JsonProperty(value = "possuiMaisItem")
+	private boolean possuiMaisUmItem;
+	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
+	@JsonProperty(value = "itensProduto")
+	private List<ItemProduto> itensProduto;
+	
 	
 	public long getId() {
 		return id;
@@ -162,6 +168,18 @@ public class Produto {
 		this.estoques = estoques;
 	}
 	
+	public boolean isPossuiMaisUmItem() {
+		return possuiMaisUmItem;
+	}
+	public void setPossuiMaisUmItem(boolean possuiMaisUmItem) {
+		this.possuiMaisUmItem = possuiMaisUmItem;
+	}
+	public List<ItemProduto> getItensProduto() {
+		return itensProduto;
+	}
+	public void setItensProduto(List<ItemProduto> itensProduto) {
+		this.itensProduto = itensProduto;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
