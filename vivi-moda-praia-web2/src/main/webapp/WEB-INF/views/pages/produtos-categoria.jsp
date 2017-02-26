@@ -55,7 +55,7 @@
 	                        	
 							</p>				                        
 	                        <p>
-	                        	<input id="qtd_${produto.id}" type="number" class="form-control text-center" value="1" style="width:100%;text-align: center;" >
+	                        	<input id="qtd_${produto.id}" type="number" class="form-control text-center" value="1" min="1" style="width:100%;text-align: center;" >
 	                            <button type="button" class="btn btn-primary glyphicon glyphicon-shopping-cart" ng-click="adicionarProdutoCarrinho(${produto.id},1)"></button>
 	                            <a href="<c:url value="/info-produto?idProduto=${produto.id}" />" class="btn btn-default">+ info</a>
 	                        </p>
