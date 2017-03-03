@@ -1,33 +1,43 @@
 package moda.praia.config;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+import java.util.List;
+
+import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
-import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 @Configuration
 @ComponentScan({"moda.praia.modulo","moda.praia.modulo.produtos","moda.praia.modulo.produtos.dao"})
+@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class})
 @ImportResource("classpath:config-jpa-spring.xml")
+//@EnableSpringDataWebSupport
 public class JPAConfig {
 
+	//@Autowired
+	//private ProdutoRepository produtoRepository;
 	/*
+	 * 
+	 * 
 
+	 @Override
+	public void addArgumentResolvers(
+			List<HandlerMethodArgumentResolver> argumentResolvers) {
+
+		 PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+		    resolver.setPageParameterName("1");
+		    resolver.setSizeParameterName("10");
+		    resolver.setOneIndexedParameters(true);
+		    argumentResolvers.add(resolver);
+		    super.addArgumentResolvers(argumentResolvers);
+
+	 }
 	@Bean(name="entityManagerFactory")
 	@Autowired
 	public LocalContainerEntityManagerFactoryBean getEntityManagerFactoryBean(DataSource datasource, JpaVendorAdapter jpaVendorAdapter) {
