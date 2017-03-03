@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!-- Navigation -->
@@ -140,8 +140,8 @@
               <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
           </li>
           <li>
-              <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Produtos <i class="fa fa-fw fa-caret-down"></i></a>
-              <ul id="demo" class="collapse">
+              <a href="javascript:;" data-toggle="collapse" data-target="#produtos"><i class="fa fa-fw fa-arrows-v"></i> Produtos <i class="fa fa-fw fa-caret-down"></i></a>
+              <ul id="produtos" class="collapse">
                   <li>
                       <a href="<c:url value="/cadastro-produto" />">Produto</a>
                   </li>
@@ -154,13 +154,13 @@
               </ul>
           </li>
           <li>
-              <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i>Estoque<i class="fa fa-fw fa-caret-down"></i></a>
-              <ul id="demo" class="collapse">
+              <a href="javascript:;" data-toggle="collapse" data-target="#estoque"><i class="fa fa-fw fa-arrows-v"></i>Estoque<i class="fa fa-fw fa-caret-down"></i></a>
+              <ul id="estoque" class="collapse">
                   <li>
                       <a href="<c:url value="/#" />">Entrada</a>
                   </li>
                   <li>
-                      <a href="<c:url value="/#" />">Consulta</a>
+                      <a href="<c:url value="/estoque-produtos" />">Consulta</a>
                   </li>
               </ul>
           </li>

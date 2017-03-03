@@ -1,6 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -8,7 +6,8 @@
 <!-- Custom CSS -->
 <spring:url var="action" value="/categoria/add" />	
 <c:url var="home" value="/" scope="request" />
-<input id="home" type="hidden" value="${home}"/>		
+<input id="home" type="hidden" value="${home}"/>	
+
 		<h3>Cadastro de Categorias</h3>
 		<form:form name="form" id="form" method="post" modelAttribute="categoriaForm"	action="${action}" enctype="multipart/form-data">
 			<div id="formulario">
