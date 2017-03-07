@@ -1,5 +1,6 @@
 package moda.praia.modulo.produtos.repositorios;
 
+import moda.praia.modulo.produtos.bean.ItemProdutoEstoque;
 import moda.praia.modulo.produtos.bean.Produto;
 
 import org.springframework.beans.factory.annotation.Qualifier;
