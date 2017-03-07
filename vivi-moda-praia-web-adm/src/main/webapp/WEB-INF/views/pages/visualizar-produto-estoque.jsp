@@ -53,6 +53,7 @@
 				  				<th>Nome</th>
 				  				<th>Tipo Medida</th>
 				  				<th>QTD Estoque</th>
+				  				<th>...</th>
 				  			</tr>
 				  		</thead>
 				  		<tbody>
@@ -60,11 +61,41 @@
 				  				<tr>
 				  					<td>${itemProduto.nome}</td>
 				  					<td>${itemProduto.tipoMedida.nome}</td>
-				  					<td align="right">${itemProduto.quantidadeEstoque}</td>		
+				  					<td>
+				  					</td>
+				  					<td>
+				  						<a onclick="selecionarItemProduto(${itemProduto.id})" class="btn btn-primary">Selecionar</a>
+				  					</td>
 				  				</tr>
 				  			</c:forEach>
+				  		</tbody>
 				  	</table>
 				</div>
 		</div>		
 	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title" >Peça Selecionada</h3>
+		</div>
+	 	<div id="pecaSelecionado" class="panel-body">
+	 	</div>
+	</div>	 	
 </div>
+<script>
+function selecionarItemProduto(idItemProduto){
+	var url = "carregar/form/entrada/estoque";
+	//var data = 'idItemEstoque=' + idItemProduto;
+	var $home = $('#home').attr('value');
+	
+	$.ajax({
+	    url: $home + url,
+	    type: 'GET',
+	    data: {idItemProduto:idItemProduto},
+	    async: true,
+	    success: function (returndata) {
+	    	$("#pecaSelecionado").html(returndata);
+	    }
+  	});
+	
+}
+</script>

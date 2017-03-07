@@ -48,9 +48,6 @@ public class Produto {
 	private String informacoes;
 	@JsonProperty(value = "valor")
 	private BigDecimal valor;
-	@Enumerated(EnumType.STRING)
-	@JsonIgnore
-	private TipoMedida tipoMedida;
 	@JsonIgnore
 	private int tamanhoNumerico;
 	@Enumerated(EnumType.STRING)
@@ -112,12 +109,6 @@ public class Produto {
 	}
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
-	}
-	public TipoMedida getTipoMedida() {
-		return tipoMedida;
-	}
-	public void setTipoMedida(TipoMedida tipoMedida) {
-		this.tipoMedida = tipoMedida;
 	}
 	public int getTamanhoNumerico() {
 		return tamanhoNumerico;

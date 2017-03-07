@@ -48,7 +48,6 @@ public class FormProduto extends Produto {
 		this.setCategoria(null);
 		this.setSubcategoria(null);
 		this.setEstoques(null);
-		this.setTipoMedida(null);
 		this.setTamanhoLetra(null);
 		this.setTamanhoNumerico(0);
 		this.setImagemProduto1(null);
@@ -67,7 +66,6 @@ public class FormProduto extends Produto {
 		this.setCategoria(produto.getCategoria());
 		this.setSubcategoria(produto.getSubcategoria());
 		this.setEstoques(produto.getEstoques());
-		this.setTipoMedida(produto.getTipoMedida());
 		this.setTamanhoLetra(produto.getTamanhoLetra());
 		this.setTamanhoNumerico(produto.getTamanhoNumerico());
 		this.setImagemProduto1(produto.getImagemProduto1());

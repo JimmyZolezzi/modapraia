@@ -224,7 +224,7 @@ public class ProdutoController {
 	@RequestMapping(value = "/produto/carregar/alteracao", method = RequestMethod.GET)
 	public String carregarProdutoAleracao(@RequestParam("idProduto")String idProduto, Model model){
 		FormProduto formProduto = new FormProduto(new Produto());
-		if(idProduto!=null && !idProduto.equals("") && idProduto.matches("[1-9].*")){
+		if(idProduto!=null && !idProduto.equals("") && idProduto.matches("[0-9].*")){
 			Produto produto = produtoBusiness.pesquisarProduto(Long.parseLong(idProduto));
 			model.addAttribute("idCategoriaSelecionada", produto.getCategoria().getId());
 			formProduto = new FormProduto(produto);

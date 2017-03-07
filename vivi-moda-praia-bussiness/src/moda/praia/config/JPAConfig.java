@@ -1,21 +1,19 @@
 package moda.praia.config;
 
 
-import java.util.List;
 
+import moda.praia.modulo.estoque.repositorios.ItemProdutoEstoqueRepository;
+import moda.praia.modulo.estoque.repositorios.ItemProdutoRepository;
 import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 @Configuration
 @ComponentScan({"moda.praia.modulo","moda.praia.modulo.produtos","moda.praia.modulo.produtos.dao"})
-@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class})
+@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class,ItemProdutoRepository.class,ItemProdutoEstoqueRepository.class})
 @ImportResource("classpath:config-jpa-spring.xml")
 //@EnableSpringDataWebSupport
 public class JPAConfig {

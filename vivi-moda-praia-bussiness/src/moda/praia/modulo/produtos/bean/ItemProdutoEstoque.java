@@ -1,19 +1,15 @@
 package moda.praia.modulo.produtos.bean;
 
+
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,35 +20,27 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-@JsonRootName(value = "itemProduto")
-public class ItemProduto implements Serializable{
-
-	private static final long serialVersionUID = 1534259197878283272L;
+@JsonRootName(value = "itemProdutoEstoque")
+public class ItemProdutoEstoque implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonProperty(value = "id")
 	private long id;
-	@JsonProperty(value = "nome")
-	private String nome;
-	@JsonProperty(value = "tipoMedida")
 	@Enumerated(EnumType.STRING)
+	@JsonProperty(value = "tipoMedida")
 	private TipoMedida tipoMedida;
-	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
-	@JsonProperty(value = "itensEstoque")
-	private List<ItemProdutoEstoque> itensEstoque;
-	
-	
+	@JsonProperty(value = "tamanho")
+	private String tamanho;
+	@JsonProperty(value = "quantidade")
+	private int quantidade;
+
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
-	}
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 	public TipoMedida getTipoMedida() {
 		return tipoMedida;
@@ -60,20 +48,25 @@ public class ItemProduto implements Serializable{
 	public void setTipoMedida(TipoMedida tipoMedida) {
 		this.tipoMedida = tipoMedida;
 	}
-	public List<ItemProdutoEstoque> getItensEstoque() {
-		return itensEstoque;
+	public String getTamanho() {
+		return tamanho;
 	}
-	public void setItensEstoque(List<ItemProdutoEstoque> itensEstoque) {
-		this.itensEstoque = itensEstoque;
+	public void setTamanho(String tamanho) {
+		this.tamanho = tamanho;
+	}
+	public int getQuantidade() {
+		return quantidade;
+	}
+	public void setQuantidade(int quantidade) {
+		this.quantidade = quantidade;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result
-				+ ((itensEstoque == null) ? 0 : itensEstoque.hashCode());
-		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + quantidade;
+		result = prime * result + ((tamanho == null) ? 0 : tamanho.hashCode());
 		result = prime * result
 				+ ((tipoMedida == null) ? 0 : tipoMedida.hashCode());
 		return result;
@@ -86,21 +79,19 @@ public class ItemProduto implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemProduto other = (ItemProduto) obj;
+		ItemProdutoEstoque other = (ItemProdutoEstoque) obj;
 		if (id != other.id)
 			return false;
-		if (itensEstoque == null) {
-			if (other.itensEstoque != null)
-				return false;
-		} else if (!itensEstoque.equals(other.itensEstoque))
+		if (quantidade != other.quantidade)
 			return false;
-		if (nome == null) {
-			if (other.nome != null)
+		if (tamanho == null) {
+			if (other.tamanho != null)
 				return false;
-		} else if (!nome.equals(other.nome))
+		} else if (!tamanho.equals(other.tamanho))
 			return false;
 		if (tipoMedida != other.tipoMedida)
 			return false;
 		return true;
 	}
+
 }
