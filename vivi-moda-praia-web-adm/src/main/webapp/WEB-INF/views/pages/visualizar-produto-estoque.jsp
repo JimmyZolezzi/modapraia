@@ -5,7 +5,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<spring:url var="action" value="" />
 <c:url var="home" value="/" scope="request" />
 <input id="home" type="hidden" value="${home}"/>
 <ol class="breadcrumb">
@@ -39,40 +38,10 @@
 	  	</div>
 	</div>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title" >Pe&ccedil;as</h3>
-		</div>
-	 	<div class="panel-body">
- 			
-	 			<div class="table-responsive" id="myctrl" ng-app='appCategoria' ng-controller="myCtrlCategoria">
-				  <!-- Default panel contents -->
-				  	<table  class="table table-hover table-striped">
-				  		<thead>
-				  			<tr>
-				  				<th>Nome</th>
-				  				<th>Tipo Medida</th>
-				  				<th>QTD Estoque</th>
-				  				<th>...</th>
-				  			</tr>
-				  		</thead>
-				  		<tbody>
-				  			<c:forEach var="itemProduto" items="${produto.itensProduto}" >
-				  				<tr>
-				  					<td>${itemProduto.nome}</td>
-				  					<td>${itemProduto.tipoMedida.nome}</td>
-				  					<td>
-				  					</td>
-				  					<td>
-				  						<a onclick="selecionarItemProduto(${itemProduto.id})" class="btn btn-primary">Selecionar</a>
-				  					</td>
-				  				</tr>
-				  			</c:forEach>
-				  		</tbody>
-				  	</table>
-				</div>
-		</div>		
+	<div id="pecas">
+		<jsp:include page="componentes/pecas-estoque.jsp"/>
 	</div>
+	
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title" >Peça Selecionada</h3>
@@ -82,15 +51,15 @@
 	</div>	 	
 </div>
 <script>
-function selecionarItemProduto(idItemProduto){
+function selecionarItemProduto(idItemProduto,idProduto){
 	var url = "carregar/form/entrada/estoque";
-	//var data = 'idItemEstoque=' + idItemProduto;
+	var data = 'idItemProduto=' + idItemProduto + '&idProduto=' + idProduto;
 	var $home = $('#home').attr('value');
 	
 	$.ajax({
 	    url: $home + url,
 	    type: 'GET',
-	    data: {idItemProduto:idItemProduto},
+	    data: data,
 	    async: true,
 	    success: function (returndata) {
 	    	$("#pecaSelecionado").html(returndata);

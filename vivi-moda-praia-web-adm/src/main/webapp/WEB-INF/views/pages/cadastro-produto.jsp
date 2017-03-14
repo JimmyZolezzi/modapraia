@@ -24,7 +24,7 @@
 		</h2>
 	</h2>
 	<h3>Produtos</h3>
-	<div id="blocoCadastroProduto" class="">
+	<div id="blocoCadastroProduto" class="none">
 		<div id="formulario">
 		<h3>Cadastro de Produtos</h3>
 				<form:hidden path="id" />

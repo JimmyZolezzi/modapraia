@@ -4,9 +4,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<form:form  method="post" action=""  modelAttribute="formEntradaEstoque">
+
+
+<spring:url var="action" value="/realizar/entrada/produto/estoque" />
+<form:form id="form"  method="post" action="${action}"  modelAttribute="formEntradaEstoque">
+	
 	<div id="formulario">
 		<div class="form-group">
+			<form:hidden path="idProduto"/>
+			<form:hidden path="idItemEstoque"/>
 			<label for="itemProdutoEstoque.tipoMedida">Item: </label>
 			${formEntradaEstoque.nomeItem}
 		</div>
@@ -15,22 +21,38 @@
 			${formEntradaEstoque.itemProdutoEstoque.tipoMedida}
 		</div>
 		<spring:bind path="itemProdutoEstoque.tamanho">
+			<div id="linkNovaMedida" class="" >
+				<a onclick="novaMedidaNumerica()" >Nova medida</a><br/>
+			</div>
+			<div id="linkListaMedidas"  class="none">
+				<a onclick="mostrarListaMedidas()">Lista de Medidas</a><br/>
+			</div>
 			<div class="form-group ${status.error?'has-error':''} ">
+				
 				<label for="itemProdutoEstoque.tamanho">Tamanho</label>
-				<c:if test="${not empty itemProduto.itensEstoque}">
-					<form:select id="tamanhoNumero" path="itemProdutoEstoque.tamanho">
-						<form:options itemLabel="tamanho" itemValue="id" items="${itemProduto.itensEstoque}"/>
-					</form:select>
+				
+				<c:if test="${empty itemProduto.itensEstoque && formEntradaEstoque.itemProdutoEstoque.tipoMedida ne 'LETRA'}">
+					<form:input path="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />
 				</c:if>
+				<input id="htmlTamanhoNumerico" type="hidden" value="" /> 
+				<div id="tamanhoNumericoCampo">
+
+				</div>
+				<div id="tamanhoNumerico">
+					<c:if test="${not empty itemProduto.itensEstoque && formEntradaEstoque.itemProdutoEstoque.tipoMedida ne 'LETRA'}">
+						<form:select id="tamanhoNumero" path="itemProdutoEstoque.tamanho">
+							<form:options itemLabel="tamanho" itemValue="tamanho" items="${itemProduto.itensEstoque}"/>
+						</form:select>
+					</c:if>
+				</div>
+				
 				<c:if test="${formEntradaEstoque.itemProdutoEstoque.tipoMedida eq 'LETRA'}">
-					<form:select id="tamanhoLetra" path="itemProdutoEstoque.tamanho" onchange="selecionarItemProdutoEstoqueNumero(${itemProduto.id})">
+					<form:select id="tamanhoLetra" path="itemProdutoEstoque.tamanho" onchange="selecionarItemProdutoEstoqueNumero(${itemProduto.id}, ${idProduto})">
 						<form:option value="">selecionar</form:option>
 						<form:options items="${tamanhosLetra}"/>
 					</form:select>
 				</c:if>
-				<c:if test="${empty itemProduto.itensEstoque && formEntradaEstoque.itemProdutoEstoque.tipoMedida ne 'LETRA'}">
-					<form:input path="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />
-				</c:if>
+				
 				<label class="control-label" for="itemProdutoEstoque.tamanho">
 				<form:errors path="itemProdutoEstoque.tamanho"/></label>	
 			</div>
@@ -59,11 +81,11 @@
 <script>
 
 
-function selecionarItemProdutoEstoqueNumero(idItemProduto){
+function selecionarItemProdutoEstoqueNumero(idItemProduto,idProduto){
 	var url = "selecionar/item/produto/estoque";
 	var tamanhoLetra = document.getElementById("tamanhoLetra").value;
 	var tamanho = tamanhoLetra;
-	var data = "idItemProduto=" +  idItemProduto +"&tamanho=" + tamanho;
+	var data = "idItemProduto=" +  idItemProduto + "&idProduto=" + idProduto + "&tamanho=" + tamanho;
 	var $home = $('#home').attr('value');
 	$.ajax({
 	    url: $home + url,
@@ -76,4 +98,77 @@ function selecionarItemProdutoEstoqueNumero(idItemProduto){
   	});
 	
 }
+$("#form").submit(function(event) {
+	var $home = $('#home').attr('value');
+	event.preventDefault();
+	// setup some local variables
+	var $form = $("#form");
+	var formData = new FormData($(this)[0]);
+	var idProduto = document.getElementById('idProduto').value;
+	// let's select and cache all the fields
+	// serialize the data in the form
+	// fire off the request to /action
+	$.ajax({
+	    url: $form.attr('action'),
+	    type: 'POST',
+	    data: formData,
+	    async: true,
+	    cache: false,
+	    contentType: false,
+	  	processData: false,
+	    success: function (returndata) {
+	    	$("#pecaSelecionado").html(returndata);	
+	    	atualizarPecasSelecionadas(idProduto);
+	    }
+    });
+});
+
+function atualizarPecasSelecionadas(idProduto){
+	
+	var url = "/atualizar/pecas/estoque";
+	var data = "idProduto=" + idProduto;
+	var $home = $('#home').attr('value');
+	$.ajax({
+	    url: $home + url,
+	    type: 'GET',
+	    data: data,
+	    async: true,
+	    success: function (returndata) {
+	    	$("#pecas").html(returndata);
+	    }
+  	});
+}
+function novaMedidaNumerica(){
+	
+	var htmlTamanhoNumericoCampo = '<input name="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />';
+	var tamanhoNumericoCampo = document.getElementById("tamanhoNumericoCampo");
+	var tamanhoNumerico = document.getElementById("tamanhoNumerico");
+	var htmlTamanhoNumericoHidden = document.getElementById("htmlTamanhoNumerico");
+	
+	$(tamanhoNumericoCampo).html(htmlTamanhoNumericoCampo);
+	htmlTamanhoNumericoHidden.value = tamanhoNumerico.innerHTML;
+	$(tamanhoNumerico).html('');
+	
+	var linkNovaMedida = document.getElementById("linkNovaMedida");
+	var linkListaMedidas = document.getElementById("linkListaMedidas");
+	linkNovaMedida.classList.add("none");
+	linkListaMedidas.classList.remove("none");
+}
+function mostrarListaMedidas(){
+	
+	var tamanhoNumericoCampo = document.getElementById("tamanhoNumericoCampo");
+	var tamanhoNumerico = document.getElementById("tamanhoNumerico");
+	var htmlTamanhoNumericoHidden = document.getElementById("htmlTamanhoNumerico");
+	$(tamanhoNumerico).html(htmlTamanhoNumericoHidden.value);
+	$(tamanhoNumericoCampo).html('');
+	
+	var linkNovaMedida = document.getElementById("linkNovaMedida");
+	var linkListaMedidas = document.getElementById("linkListaMedidas");
+	
+	linkNovaMedida.classList.remove("none");
+	linkListaMedidas.classList.add("none");
+	
+}
+
+
 </script>

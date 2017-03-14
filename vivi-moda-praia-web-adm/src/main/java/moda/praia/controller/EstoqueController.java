@@ -12,6 +12,7 @@ import moda.praia.modulo.produtos.bean.TamanhoLetra;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,13 +74,12 @@ public class EstoqueController {
 		
 	}
 	@RequestMapping(value = "/carregar/form/entrada/estoque",method = RequestMethod.GET)
-	public String carregarFormularioEntradaEstoque(@RequestParam("idItemProduto") String idItemProduto,Model model){
-		if(idItemProduto != null && idItemProduto.matches("[0-9].*")){
+	public String carregarFormularioEntradaEstoque(@RequestParam("idItemProduto") String idItemProduto, @RequestParam("idProduto") String idProduto, Model model){
+		if(idItemProduto != null && idItemProduto.matches("[0-9].*") && idProduto != null && idProduto.matches("[0-9].*")){
 			long idItemProdutoLong = Long.parseLong(idItemProduto);
-			
+			long idProdutoLong = Long.parseLong(idProduto);
 			ItemProduto itemProduto = estoqueBusiness.carregarItemProduto(idItemProdutoLong);
 			if(itemProduto!=null && itemProduto.getTipoMedida() !=  null){
-				
 				model.addAttribute("tamanhosLetra",TamanhoLetra.values());
 				model.addAttribute("itemProduto",itemProduto);
 				//Cria formEntradaEstoque
@@ -88,7 +88,8 @@ public class EstoqueController {
 				ItemProdutoEstoque itemProdutoEstoque = new ItemProdutoEstoque();
 				itemProdutoEstoque.setTipoMedida(itemProduto.getTipoMedida());
 				formEntradaEstoque.setItemProdutoEstoque(itemProdutoEstoque);
-				
+				formEntradaEstoque.setIdItemEstoque(itemProduto.getId());
+				formEntradaEstoque.setIdProduto(idProdutoLong);
 				model.addAttribute("formEntradaEstoque",formEntradaEstoque);
 				
 			}
@@ -100,11 +101,11 @@ public class EstoqueController {
 	}
 
 	@RequestMapping(value = "/selecionar/item/produto/estoque",method = RequestMethod.GET)
-	public String selecionarItemProddutoEstoque(@RequestParam("idItemProduto") String idItemProduto,@RequestParam("tamanho") String tamanho, Model model){
+	public String selecionarItemProddutoEstoque(@RequestParam("idItemProduto") String idItemProduto,@RequestParam("tamanho") String tamanho,@RequestParam("idProduto") String idProduto ,Model model){
 		
-		if(idItemProduto != null && idItemProduto.matches("[0-9].*")){
+		if(idItemProduto != null && idItemProduto.matches("[0-9].*") && idProduto !=null && idProduto.matches("[0-9].*")){
 			long idItemProdutoLong = Long.parseLong(idItemProduto);
-			
+			long idProdutoLong = Long.parseLong(idProduto);
 			ItemProduto itemProduto = estoqueBusiness.carregarItemProduto(idItemProdutoLong);
 			if(itemProduto!=null && itemProduto.getTipoMedida() !=  null){
 				
@@ -121,7 +122,8 @@ public class EstoqueController {
 				itemProdutoEstoque.setTamanho(tamanho);
 				itemProdutoEstoque.setTipoMedida(itemProduto.getTipoMedida());
 				formEntradaEstoque.setItemProdutoEstoque(itemProdutoEstoque);
-				
+				formEntradaEstoque.setIdItemEstoque(idItemProdutoLong);
+				formEntradaEstoque.setIdProduto(idProdutoLong);
 				model.addAttribute("formEntradaEstoque",formEntradaEstoque);
 				
 			}
@@ -140,11 +142,13 @@ public class EstoqueController {
 			Produto produto = estoqueBusiness.visualizarProdutoEstoque(formEntradaEstoque.getIdProduto());
 			ItemProduto itemProduto = estoqueBusiness.carregarItemProduto(formEntradaEstoque.getIdItemEstoque());
 			ItemProdutoEstoque itemProdutoEstoque = formEntradaEstoque.getItemProdutoEstoque();
-			
 			boolean salvo = estoqueBusiness.entrarProdutoEstoque(produto, itemProduto, itemProdutoEstoque, formEntradaEstoque.getQuantidadeEntrada());
 			if(salvo){
-				formEntradaEstoque.setStatus("sucesso");
-				formEntradaEstoque.setMensagem("Entrada de produto em estoque realizada com sucesso.");
+				model.addAttribute("msg", "Entrada de produto em estoque realizada com sucesso.");
+				model.addAttribute("css", "alert-success");
+			}else{
+				model.addAttribute("msg", "Erro ao tentar realizar a entrada de produto em estoque.");
+				model.addAttribute("css", "alert-danger");
 			}
 			
 		}
@@ -152,6 +156,21 @@ public class EstoqueController {
 		return "pages/componentes/form-entrada-estoque";
 	}
 	
+	@RequestMapping(value = "/atualizar/pecas/estoque",method = RequestMethod.GET)
+	public String atualizarPecas(@RequestParam String idProduto, Model model){
+		
+		if(idProduto != null && idProduto.matches("[0-9].*")){
+			long idProdutoLong = Long.valueOf(idProduto);
+			Produto produto = estoqueBusiness.visualizarProdutoEstoque(idProdutoLong);
+			
+			if(produto != null){
+				model.addAttribute("produto", produto);
+			}
+			
+		}
+		
+		return "pages/componentes/pecas-estoque";
+	}
 	
 	
 	private ItemProdutoEstoque procurarItemProdutoEstoque(ItemProduto itemProduto, String tamanho){
