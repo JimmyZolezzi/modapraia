@@ -36,34 +36,27 @@
 					<div class="col-md-6" >
 						<div>
 				  		 	<img class="thumbnail media-object" id="fotoSelecionada" data-toggle="magnify"  width="100%" height="100%" src="<c:url value="/image?id=${produto.imagemProduto1.id}&tamanhoImagem=normal" />"  />
-						
-						</div>
-						<div class="row ">
 							<div class="container">
 								<div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
 				 				<div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
 								<div class="wrapper">
-								<ul class="nav nav-tabs list" id="myTab">
-								<c:forEach var="imagemProduto" items="${produto.imagensProduto}">
-									<li>
-										<img width="100%" height="100%" src="<c:url value="/image?id=${imagemProduto.id}&tamanhoImagem=pequeno"/>" onclick="mudarFoto(${imagemProduto.id})"  />
-									</li>
-								</c:forEach>
-								</ul>
+									<ul class="nav nav-tabs list" id="myTab">
+										<c:forEach var="imagemProduto" items="${produto.imagensProduto}">
+											<li>
+												<img width="100%" height="100%" src="<c:url value="/image?id=${imagemProduto.id}&tamanhoImagem=pequeno"/>" onclick="mudarFoto(${imagemProduto.id})"  />
+											</li>
+										</c:forEach>
+									</ul>
 								</div>	
 							</div>
 						</div>
+						<div class="row ">
+							
+						</div>
+						<br/>
 				  	</div>
 				  	<div class="col-md-6">
-					  	<div class="form-group">
-							<label>Quantidade</label>
-							<input id="qtd_${produto.id}" type="number" class="form-control text-center" value="1">
-						</div>
-						<div class="form-group">
-							<label>Tamanho</label>
-							<input id="qtd_${produto.id}" type="text" class="form-control text-center" value="P">
-						</div>
-	               	 	<button type="button" class="btn btn-primary glyphicon glyphicon-shopping-cart" ng-click="adicionarProdutoCarrinho(${produto.id},1)">Adicionar</button>
+				  		<jsp:include page="componentes/form-entrada-produto-carrinho.jsp" />
 					</div>
 				</div>
 				

@@ -1,10 +1,18 @@
 package moda.praia.web.controller;
 
+import java.math.BigDecimal;
+
+import moda.praia.modulo.pedido.bean.ItemPedidoTamanho;
+import moda.praia.modulo.pedido.bean.Pedido;
+import moda.praia.modulo.pedido.bean.ProdutoPedido;
 import moda.praia.modulo.produtos.ProdutoBusiness;
 import moda.praia.modulo.produtos.bean.ImagemProduto;
+import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.web.controller.editor.ImagemProdutoEditor;
 import moda.praia.web.controller.editor.ProdutoEditor;
+import moda.praia.web.controller.form.FormPedido;
+import moda.praia.web.controller.form.FormProdutoPedido;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,8 +51,30 @@ public class ProdutoInfoController {
 	
 	private void populateForm(Model model, long idProduto){
 		
+		FormProdutoPedido formProdutoPedido = new FormProdutoPedido();
+		ProdutoPedido produtoPedido = new ProdutoPedido();
 		Produto produto = produtoBusiness.pesquisarProduto(idProduto);
+		
+		//obtem o primeiro produto
+		if(produto.getItensProduto() != null){
+			
+			for (ItemProduto itemProduto : produto.getItensProduto()) {
+
+				ItemPedidoTamanho itemPedidoTamanho = new ItemPedidoTamanho();
+				itemPedidoTamanho.setNome(itemProduto.getNome());
+				itemPedidoTamanho.setItemProduto(itemProduto);
+				produtoPedido.getItensPedidoTamanho().add(itemPedidoTamanho);
+			
+			}
+		}
+		
+		produtoPedido.setProduto(produto);
+		produtoPedido.setValorUnitario(produto.getValor());
+		BigDecimal valorTotal = produto.getValor().multiply(new BigDecimal(1));
+		produtoPedido.setValorToral(valorTotal);
+		formProdutoPedido.getListaProdutoPedido().add(produtoPedido);
 		model.addAttribute("produto", produto);
+		model.addAttribute("formProdutoPedido",formProdutoPedido);
 		
 	}
 	

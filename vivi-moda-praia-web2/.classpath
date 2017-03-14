@@ -73,7 +73,14 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-jdbc-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-orm-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-test-4.3.6.RELEASE.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-tx-4.3.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-tx-4.3.6.RELEASE.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/waffle-jna-1.7.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-data-commons-2.0.0.M1.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-data-commons-core-1.4.1.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/spring-data-jpa-2.0.0.M1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

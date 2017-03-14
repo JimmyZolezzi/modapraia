@@ -10,12 +10,6 @@
 	<div>
 		
 		<form>
-        <header class="jumbotron hero-spacer">
-            <h1>A Warm Welcome!</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
-            <p><a class="btn btn-primary btn-large">Call to action!</a>
-            </p>
-        </header>
 		<input id="home" type="hidden" value="${home}"/>
 		<c:url var="home" value="/" scope="request" />
         <hr>
@@ -27,12 +21,12 @@
             </div>
         </div>
         <!-- /.row -->
-<style type="text/css">
-	.none{
-		display: none !important;
-	}
-
-</style>
+		<style type="text/css">
+			.none{
+				display: none !important;
+			}
+		
+		</style>
         <!-- Page Features -->
         <div class="row text-center" >
 			<c:forEach var="produto" items="${produtosCategoria}">
@@ -55,8 +49,6 @@
 	                        	
 							</p>				                        
 	                        <p>
-	                        	<input id="qtd_${produto.id}" type="number" class="form-control text-center" value="1" min="1" style="width:100%;text-align: center;" >
-	                            <button type="button" class="btn btn-primary glyphicon glyphicon-shopping-cart" ng-click="adicionarProdutoCarrinho(${produto.id},1)"></button>
 	                            <a href="<c:url value="/info-produto?idProduto=${produto.id}" />" class="btn btn-default">+ info</a>
 	                        </p>
 	                    </div>
