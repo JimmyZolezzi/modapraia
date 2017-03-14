@@ -1,14 +1,18 @@
 package moda.praia.modulo.pedido.bean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,18 +28,25 @@ import moda.praia.modulo.produtos.bean.Produto;
 @JsonRootName(value = "produto")
 public class ProdutoPedido {
 
+	public ProdutoPedido(){
+		itensPedidoTamanho = new ArrayList<ItemPedidoTamanho>();
+	}
+	
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonProperty(value = "id")
 	private long id;
 	@JsonProperty(value = "quantidade")
 	private double quantidade;
-	@ManyToOne(cascade={CascadeType.REFRESH})
+	@ManyToOne(cascade={CascadeType.REFRESH},fetch=FetchType.LAZY)
 	@JsonProperty(value = "produto")
 	private Produto produto;
 	@JsonProperty(value = "valorUnitario")
 	private BigDecimal valorUnitario;
 	@JsonProperty(value = "valorTotal")
 	private BigDecimal valorToral;
+	@JsonProperty(value = "itensPedidoTamanho")
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	private List<ItemPedidoTamanho> itensPedidoTamanho;
 	
 	public long getId() {
 		return id;
@@ -66,6 +77,12 @@ public class ProdutoPedido {
 	}
 	public void setValorToral(BigDecimal valorToral) {
 		this.valorToral = valorToral;
+	}
+	public List<ItemPedidoTamanho> getItensPedidoTamanho() {
+		return itensPedidoTamanho;
+	}
+	public void setItensPedidoTamanho(List<ItemPedidoTamanho> itensPedidoTamanho) {
+		this.itensPedidoTamanho = itensPedidoTamanho;
 	}
 	
 	

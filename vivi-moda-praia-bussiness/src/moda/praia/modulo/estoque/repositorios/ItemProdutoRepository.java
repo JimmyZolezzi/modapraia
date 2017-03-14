@@ -8,6 +8,5 @@ public interface ItemProdutoRepository extends JpaRepository<ItemProduto,Long> {
 
 	
 	public ItemProduto findById(long id);
-	public boolean merge(ItemProduto itemProduto);
 	
 }

@@ -46,6 +46,7 @@ public class EstoqueBusinessImpl implements EstoqueBusiness {
 				int quantidadeEntradaEstoque = 0 ;
 				if(itemProdutoArmazenado != null){
 					quantidadeEntradaEstoque = itemProdutoArmazenado.getQuantidade() + quantidadeEstoque;
+					itemProdutoArmazenado.setQuantidade(quantidadeEntradaEstoque);
 				}else{
 					quantidadeEntradaEstoque = quantidadeEstoque;
 					itemProdutoEstoque.setQuantidade(quantidadeEntradaEstoque);
@@ -64,6 +65,8 @@ public class EstoqueBusinessImpl implements EstoqueBusiness {
 				historicoMovimentacaoEstoque.setQuantidade(quantidadeEstoque);
 				historicoMovimentacaEstoqueRepository.save(historicoMovimentacaoEstoque);
 				
+				return true;
+				
 			}
 			
 		}catch(Exception e){
@@ -79,7 +82,7 @@ public class EstoqueBusinessImpl implements EstoqueBusiness {
 		
 		for (ItemProdutoEstoque item : itensEstoque) {
 			if(item.getTamanho() != null && item.getTamanho().equals(itemProdutoEstoque.getTamanho())){
-				return itemProdutoEstoque;
+				return item;
 			}
 		}
 		
