@@ -1,4 +1,4 @@
-package moda.praia.modulo.estoque.repositorios;
+package moda.praia.modulo.produtos.repositorios;
 
 import moda.praia.modulo.produtos.bean.ItemProduto;
 
