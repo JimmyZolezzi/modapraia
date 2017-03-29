@@ -4,7 +4,13 @@
 	color: black;
 	font: normal;
 	font-family: 'Anton', sans-serif;;
-	font-size: 1.3em;
+	font-size: 1em;
+}
+
+.fonteMenu{
+	font-family: 'Anton', sans-serif;;
+	font-size: 1em !important;
+	
 }
 
 .textoVivi{
@@ -14,6 +20,7 @@
 	font: normal !important;
 	font-family: 'Raleway', sans-serif;
 }
+
 
 .caminhoPao{
 	
@@ -124,7 +131,7 @@
 }
 
 .labelInputFormulario{
-	height: 2em;
+	height: 2em ;
 	font-size: 1em;
 	width: 100%;
 	border-width: thin;
@@ -135,7 +142,29 @@
 	border-radius: 0 !important;
 }
 
-
+.list_item_container {
+    height: 60px;
+    padding: 5px 0;
+}
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+.image {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    float: left;
+}
+.valorAutocomplete {
+    font-style: normal !important;
+    font-size: 1em !important;
+    color: #1E90FF !important;
+    font-weight: bold !important;
+}
+#autocompletePesquisa a:hover{
+	background-color: white;
+	
+}
 
 .fieldFormulario{
 

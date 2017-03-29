@@ -37,8 +37,7 @@
 			<p class="help-block">Example block-level help text here.</p>
 		</div>
 		<div class="form-group">
-			<label class="sr-only" for="exampleInputAmount">Valor (em
-				reais)</label>
+			<label class="sr-only" for="exampleInputAmount">Valor (em reais)</label>
 			<div class="input-group">
 				<div class="input-group-addon">R$</div>
 				<form:input path="valor" type="text" class="form-control"

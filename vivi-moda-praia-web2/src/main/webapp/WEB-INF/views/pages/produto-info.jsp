@@ -10,7 +10,6 @@
 <spring:url var="action" value="/info-produto/add/foto" />
 <c:url var="home" value="/" scope="request" />
 <input id="home" type="hidden" value="${home}"/>
-<br/>
 	<ol class="breadcrumb caminhoPao">
 		<li><a href="#">${produto.categoria.descricao}</a></li>
 		<li><a href="#">${produto.subcategoria.descricao}</a></li>
@@ -35,7 +34,7 @@
 				<div class="row">
 					<div class="col-md-6" >
 						<div>
-				  		 	<img class="thumbnail media-object" id="fotoSelecionada" data-toggle="magnify"  width="100%" height="100%" src="<c:url value="/image?id=${produto.imagemProduto1.id}&tamanhoImagem=normal" />"  />
+				  		 	<img class="thumbnail media-object" id="fotoSelecionada" data-toggle="magnify"  width="90%" height="100%" src="<c:url value="/image?id=${produto.imagemProduto1.id}&tamanhoImagem=normal" />"  />
 							<div class="container">
 								<div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
 				 				<div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
@@ -56,7 +55,9 @@
 						<br/>
 				  	</div>
 				  	<div class="col-md-6">
-				  		<jsp:include page="componentes/form-entrada-produto-carrinho.jsp" />
+				  		<div id="formularioProdutoPedido">
+					  		<jsp:include page="componentes/form-entrada-produto-carrinho.jsp" />
+				  		</div>
 					</div>
 				</div>
 				
@@ -79,92 +80,3 @@
 
 	  	</div>
 	</div>
-<script type="text/javascript">
-/*
-	$("#form").submit(function(event){
-	 
-	  //disable the default form submission
-	  event.preventDefault();
-	 
-	  //grab all form data  
-	  var formData = new FormData($(this)[0]);
-	  var $form = $("#form");
-	  $.ajax({
-	    url: $form.attr('action'),
-	    type: 'POST',
-	    data: formData,
-	    async: true,
-	    cache: false,
-	    contentType: false,
-	    processData: false,
-	    success: function (returndata) {
-	    	$("#imagensProduto").html($(returndata).find("#imagensProduto"));
-	    	$("#formulario").html($(returndata).find("#formulario"));
-	    }
-	  });
-	 
-	});
-	*/
-	function mudarFoto(idFotoSelecionada){
-		var $home = $('#home').attr('value');
-		var imagemSelecionada = document.getElementById('fotoSelecionada');
-		var url = 'image?id=' + idFotoSelecionada + '&tamanhoImagem=normal';
-		$(imagemSelecionada).attr('src',$home + url);
-		
-		magnificar();
-	}
-	
-	function removerFoto(idProduto, idImagem){
-		
-		var parametros = 'idProduto=' + idProduto + '&idImagemProduto=' + idImagem;
-		var $home = $('#home').attr('value');
-		$.ajax({
-		    url: $home + 'info-produto/remover/foto',
-		    type: 'GET',
-		    data: parametros,
-		    async: true,
-		    cache: false,
-		    contentType: false,
-		    processData: false,
-		    success: function (returndata) {
-		    	$("#imagensProduto").html($(returndata).find("#imagensProduto"));
-		    	$("#formulario").html($(returndata).find("#formulario"));
-		    }
-		  });
-		
-	}
-	
-	/*
-	
-	$("#form").submit(function(event) {
-		
-		event.preventDefault();
-		// setup some local variables
-		var $form = $("#form");
-		var formData = new FormData($form);
-		
-		//var serializedData = formData.serialize();
-		// let's select and cache all the fields
-		// serialize the data in the form
-		// fire off the request to /action
-		request = $.ajax({
-			url : $form.attr('action'),
-			type : "post",
-			data : formData,
-			async: false,
-			cache: false,
-			processData: false,
-			success : function(data) {
-
-				$("#formulario").html($(data).find("#formulario"));
-				console.log("SUCCESS: ", data);
-			},
-			error : function(e) {
-				console.log(e);
-			},
-		});
-		
-		return false;		
-	});
-	*/
-</script>

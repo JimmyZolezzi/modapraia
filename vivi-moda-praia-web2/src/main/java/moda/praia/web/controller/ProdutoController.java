@@ -43,6 +43,7 @@ public class ProdutoController {
 		List<Produto> produtos = produtoBusiness.pesquisaProdutos(idCategoria);
 		model.addAttribute("categoria", categoria);
 		model.addAttribute("produtosCategoria", produtos);
+		model.addAttribute("title", categoria.getDescricao());
 		
 		return "pages/produtos-categoria";
 	}
@@ -50,8 +51,10 @@ public class ProdutoController {
 	@RequestMapping(value = "/produtos/{idCategoria}/{idSubCategoria}", method = RequestMethod.GET)
 	public String produtos(Model model,@PathVariable("idCategoria") int idCategoria, @PathVariable("idSubCategoria") Subcategoria subcategoria) {
 		List<Produto> produtos = produtoBusiness.pesquisaProdutos(subcategoria);
-		model.addAttribute("categoria", subcategoria);
+		model.addAttribute("subcategoria", subcategoria);
+		model.addAttribute("categoria", subcategoria.getCategoria());
 		model.addAttribute("produtosCategoria", produtos);
+		model.addAttribute("title", subcategoria.getDescricao());
 		
 		return "pages/produtos-categoria";
 	}

@@ -16,9 +16,8 @@
 
         <!-- Title -->
         <div class="row">
-            <div class="col-lg-12">
-                <h2>${categoria.descricao}</h2>
-            </div>
+        	<br/>
+           
         </div>
         <!-- /.row -->
 		<style type="text/css">

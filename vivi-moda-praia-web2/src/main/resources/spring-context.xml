@@ -13,4 +13,11 @@
     	<property name="maxUploadSize" value="500000" /> 
 	</bean>
 	
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename">
+			<value>locale\messages</value>
+		</property>
+	</bean>
+	
 </beans>

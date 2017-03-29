@@ -11,7 +11,9 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title></title>
+<title>
+		${title}
+</title>
 
 <!-- Bootstrap Core CSS -->
 
@@ -31,26 +33,32 @@
 <script src="<c:url value="/js/angular.min.js"  />"></script>
 
 <c:url var="home" value="/" scope="request" />
-<input id="home" type="hidden" value="${home}"/>
+<script src="<c:url value="/js/jquery.js" />"></script>
+
 </head>
 
+
 <body ng-app='appProduto' ng-controller='myCtrlProduto' class="textoVivi">
+<input id="home" type="hidden" value="${home}"/>
 	
 	<jsp:include page="header.jsp" />
 	<!-- Page Content -->
 	<div class="container">
-		<jsp:include page="${partial}" />
+		<div id="conteudo">
+			<jsp:include page="${partial}" />
+		</div>
+		
 		<jsp:include page="footer.jsp" />
 		<hr>
 	</div>
 	<!-- /.container -->
 
 	<!-- jQuery -->
-	<script src="<c:url value="/js/jquery.js" />"></script>
+	
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<c:url value="/js/bootstrap.min.js" />"></script>
-
+		
 </body>
 </html>
 <script>
@@ -119,10 +127,25 @@
 		};
 		
 		$scope.carregarMenuCategoria();
-		$scope.carregarCarrinho();
+		atualizarCarrinho();
 	});
 
-
+	function atualizarCarrinho(){
+		
+		var $home = $('#home').attr('value');
+		$.ajax({
+		    url: $home + 'produto/carregar/pagina/carrinho',
+		    type: 'GET',
+		    async: true,
+		    cache: false,
+		    contentType: false,
+		    processData: false,
+		    success: function (returndata) {
+		    	$("#menuCarrinho").html(returndata);
+		    }
+		  });
+	}
 </script>
+<script src="<c:url value="/js/jquery.formatCurrency-1.4.0.min.js" />"></script>
 <script src="<c:url value="/js/site/zoomImagem.js"  />"></script>
 <script src="<c:url value="/js/site/scroolThumbsImage.js"  />"></script>

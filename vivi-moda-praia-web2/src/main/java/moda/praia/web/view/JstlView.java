@@ -20,13 +20,18 @@ public class JstlView extends InternalResourceView {
 	     
 		// Determine the path for the request dispatcher.
 		String dispatcherPath = prepareForRendering(request, response);
-		dispatcherPath = dispatcherPath.replaceAll(".*/WEB-INF/views/","");
-		// set original view being asked for as a request parameter
-		request.setAttribute("partial", dispatcherPath);
-
-		// force everything to be template.jsp
-		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/template.jsp");
-		requestDispatcher.include(request, response);
+		if(dispatcherPath !=null && !dispatcherPath.contains("componentes")){
+			dispatcherPath = dispatcherPath.replaceAll(".*/WEB-INF/views/","");
+			// set original view being asked for as a request parameter
+			request.setAttribute("partial", dispatcherPath);
+			
+			// force everything to be template.jsp
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/template.jsp");
+			requestDispatcher.include(request, response);
+			
+		}else{
+			super.renderMergedOutputModel(model, request, response);
+		}
 
 	}
 
