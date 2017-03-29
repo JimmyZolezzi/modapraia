@@ -67,10 +67,21 @@ public class ProdutoDAO {
 		return query.getResultList();
 	}
 	
+	public List<Produto> pesquisaPorDescricao(String pesquisa, int quantidade){
+		
+		Query query = em.createQuery("select p from Produto p left JOIN FETCH p.categoria left JOIN FETCH p.subcategoria left JOIN FETCH p.imagemProduto1 left JOIN FETCH p.imagemProduto2 where p.descricao like :descricao or p.categoria.descricao like :categoria");
+		query.setParameter("descricao", "%"+ pesquisa +"%");
+		query.setParameter("categoria", "%"+ pesquisa +"%");
+		query.setMaxResults(quantidade);
+
+		return query.getResultList();
+	}
+	
 	public List<Produto> listaPorSubCategoria(Subcategoria subcategoria){
 		
 		Query query = em.createQuery("select p from Produto p left JOIN FETCH p.categoria left JOIN FETCH p.subcategoria left JOIN FETCH p.imagemProduto1 left JOIN FETCH p.imagemProduto2 where p.subcategoria =:subcategoria");
 		query.setParameter("subcategoria", subcategoria);
+		
 		return query.getResultList();
 	}
 }

@@ -18,12 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import moda.praia.modulo.produtos.bean.Categoria;
 import moda.praia.modulo.produtos.bean.ImagemProduto;
+import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 import moda.praia.modulo.produtos.dao.CategoriaDAO;
 import moda.praia.modulo.produtos.dao.ImagemProdutoDAO;
 import moda.praia.modulo.produtos.dao.ProdutoDAO;
 import moda.praia.modulo.produtos.dao.SubCategoriaDAO;
+import moda.praia.modulo.produtos.repositorios.ItemProdutoRepository;
+import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
 
 @Service
 @Scope(proxyMode = ScopedProxyMode.INTERFACES)
@@ -36,14 +39,15 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 	private final SubCategoriaDAO subCategoriaDAO;
 	private final ImagemProdutoDAO imagemProdutoDAO;
 	private final ProdutoDAO produtoDAO;
-	
+	private final ItemProdutoRepository itemProdutoRepository;
 	@Autowired
 	public ProdutoBusinessImpl(CategoriaDAO categoriaDAO, SubCategoriaDAO subCategoriaDAO, 
-			ProdutoDAO produtoDAO,ImagemProdutoDAO imagemProdutoDAO){
+			ProdutoDAO produtoDAO,ImagemProdutoDAO imagemProdutoDAO, ItemProdutoRepository itemProdutoRepository){
 		this.categoriaDAO = categoriaDAO;
 		this.subCategoriaDAO = subCategoriaDAO;
 		this.imagemProdutoDAO = imagemProdutoDAO;
 		this.produtoDAO = produtoDAO;
+		this.itemProdutoRepository = itemProdutoRepository;
 	}
 	
 	
@@ -302,8 +306,15 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 
 
 	@Override
-	public List<Produto> pesquisaProdutos(String descricao) {
-		// TODO Auto-generated method stub
+	public List<Produto> pesquisaProdutos(String descricao, int quantidade) {
+
+		try{
+			return produtoDAO.pesquisaPorDescricao(descricao, quantidade);
+		
+		}catch(Exception e){
+			log.error("erro ao pesquisar produto por descricao" + e.getStackTrace());
+
+		}
 		return null;
 	}
 	
@@ -383,6 +394,19 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 			
 		}
 		return false;
+	}
+
+
+	@Override
+	public ItemProduto pesquisaItemProduto(long id) {
+		
+		try{
+			return itemProdutoRepository.findById(id);
+			
+		}catch(Exception e){
+			log.error("erro ao pesquisar item produto" + e.getStackTrace());
+		}
+		return null;
 	}
 
 

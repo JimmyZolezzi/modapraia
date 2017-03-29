@@ -37,6 +37,8 @@ public class ProdutoPedido {
 	private long id;
 	@JsonProperty(value = "quantidade")
 	private double quantidade;
+	@JsonProperty(value = "chave")
+	private String chave;
 	@ManyToOne(cascade={CascadeType.REFRESH},fetch=FetchType.LAZY)
 	@JsonProperty(value = "produto")
 	private Produto produto;
@@ -59,6 +61,12 @@ public class ProdutoPedido {
 	}
 	public void setQuantidade(double quantidade) {
 		this.quantidade = quantidade;
+	}
+	public String getChave() {
+		return chave;
+	}
+	public void setChave(String chave) {
+		this.chave = chave;
 	}
 	public Produto getProduto() {
 		return produto;

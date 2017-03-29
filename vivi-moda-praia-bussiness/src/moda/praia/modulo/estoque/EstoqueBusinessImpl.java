@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import moda.praia.modulo.estoque.repositorios.HistoricoMovimentacaEstoqueRepository;
-import moda.praia.modulo.estoque.repositorios.ItemProdutoRepository;
-import moda.praia.modulo.produtos.ProdutoBusinessImpl;
+import moda.praia.modulo.produtos.repositorios.ItemProdutoRepository;
 import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.ItemProdutoEstoque;
 import moda.praia.modulo.produtos.bean.Produto;

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import moda.praia.modulo.produtos.bean.Categoria;
 import moda.praia.modulo.produtos.bean.ImagemProduto;
+import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 
@@ -24,7 +25,8 @@ public interface ProdutoBusiness {
 	public List<Produto> pesquisaProdutos();
 	public List<Produto> pesquisaProdutos(int idCategoria);
 	public List<Produto> pesquisaProdutos(Subcategoria subcategoria);
-	public List<Produto> pesquisaProdutos(String descricao);
+	public List<Produto> pesquisaProdutos(String descricao, int quantidade);
+	public ItemProduto pesquisaItemProduto(long id);
 	public boolean removerProduto(long id);
 	public boolean alterarProduto(Produto produto);
 	//Pesquisa de Categorias	

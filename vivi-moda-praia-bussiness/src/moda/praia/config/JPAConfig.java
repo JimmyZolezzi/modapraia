@@ -4,7 +4,7 @@ package moda.praia.config;
 
 import moda.praia.modulo.estoque.repositorios.HistoricoMovimentacaEstoqueRepository;
 import moda.praia.modulo.estoque.repositorios.ItemProdutoEstoqueRepository;
-import moda.praia.modulo.estoque.repositorios.ItemProdutoRepository;
+import moda.praia.modulo.produtos.repositorios.ItemProdutoRepository;
 import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
 
 import org.springframework.context.annotation.ComponentScan;

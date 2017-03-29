@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,6 +38,7 @@ import moda.praia.modulo.produtos.bean.serialize.SubcategoriaSerialize;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @JsonRootName(value = "produto")
+@JsonAutoDetect
 public class Produto {
 
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)

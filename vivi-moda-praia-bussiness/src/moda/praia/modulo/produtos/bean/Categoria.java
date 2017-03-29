@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,6 +37,7 @@ public class Categoria {
 	@JsonProperty(value = "descricao")
 	private String descricao;
 	@OneToMany(cascade={CascadeType.REFRESH,CascadeType.REMOVE}, fetch=FetchType.LAZY)
+	@JsonIgnore
 	private List<Subcategoria> subcategorias;
 	
 	public int getId() {
