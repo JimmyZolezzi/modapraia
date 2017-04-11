@@ -21,10 +21,10 @@
 
   $(document).ready(function(){
 	  
-	  $("#txtBusca").autocomplete({
+	  $("#txtBuscaMobile").autocomplete({
 		
 	    source:function( request, response ) {
-	    	var pesquisa = document.getElementById('txtBusca').value;
+	    	var pesquisa = document.getElementById('txtBuscaMobile').value;
 			var parametros = 'pesquisa=' + pesquisa;
 			var $home = $('#home').attr('value');
 			dataType: "jsonp",
@@ -53,7 +53,7 @@
 			  descricaoProduto = produto.descricao;
 			  idProduto = produto.id;
 			  valor = produto.valor;
-			  valor  =  formataDinheiro(valor);
+			  valor  =  formataDinheiroMobile(valor);
 			  if(produto.imagemProduto1 !== undefined && produto.imagemProduto1 !== null) {
 				  imagemProdutoProduto = produto.imagemProduto1.id;
 			  }
@@ -67,14 +67,14 @@
 	    };
 	});
   
-  	function formataDinheiro(n) {
+  	function formataDinheiroMobile(n) {
 	  return n.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.");
 	}
 
   </script>
   <form class="form-inline pull-xs-right">
-  	 <div id="divBusca" class="form-group has-feedback">
-	     <input type="text" id="txtBusca" class="form-control" placeholder="Procurar" />
+  	 <div id="divBuscaMobile" class="form-group has-feedback">
+	     <input type="text" id="txtBuscaMobile" class="form-control" placeholder="Procurar" />
 	     <span class="form-control-feedback glyphicon glyphicon-search"></span>
 	 </div>
   </form>

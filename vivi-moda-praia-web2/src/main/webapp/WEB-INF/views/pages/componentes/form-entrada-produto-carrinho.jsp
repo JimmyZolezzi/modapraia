@@ -52,7 +52,7 @@
 </form:form>
 <script type="text/javascript">
 
-function mudarFoto(idFotoSelecionada){
+	function mudarFoto(idFotoSelecionada){
 		var $home = $('#home').attr('value');
 		var imagemSelecionada = document.getElementById('fotoSelecionada');
 		var url = 'image?id=' + idFotoSelecionada + '&tamanhoImagem=normal';
@@ -102,8 +102,7 @@ function mudarFoto(idFotoSelecionada){
 		  	processData: false,
 		    success: function (returndata) {
 		    	pagina = $(returndata).filter('#pagina')[0];
-		    	alert(pagina.value);
-		    	if(pagina.value == 'paginaPedido'){
+		    	if(pagina != 'undefined' || pagina.value == 'paginaPedido'){
 			    	$("#conteudo").html(returndata);	
 		    		
 		    	}else{

@@ -56,7 +56,7 @@
 			<td><a href="<c:url value="/home" />" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continuar Comprando</a></td>
 			<td colspan="2" class="hidden-xs"></td>
 			<td class="hidden-xs text-center"><strong>Total <fmt:formatNumber value="${pedido.valorProdutos}" type="currency"/></strong></td>
-			<td><a href="pagina/finalizar/pedido" class="btn btn-success btn-block">Finalizar Compra <i class="fa fa-angle-right"></i></a></td>
+			<td><a href="finalizar-pedido" class="btn btn-success btn-block">Finalizar Compra <i class="fa fa-angle-right"></i></a></td>
 		</tr>
 	</tfoot>
 </table>

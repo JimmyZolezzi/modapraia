@@ -1,23 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<div id="cadastro">
-<br/><br/>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<br />
+<br />
+<div id="cadastroCliente">
 <h3>Cadastro Cliente - Físico</h3>
-<spring:url var="action" value="/cadastrar/cliente" />
-<c:url var="home" value="/" scope="request" />	
-<input id="home" type="hidden" value="${home}"/>
-<form:form method="post" id="form" modelAttribute="formCliente" action="${action}">
+<spring:url var="action" value="/cadastrar/cliente-teste" />
+<c:url var="home" value="/" scope="request" />
+<input id="home" type="hidden" value="${home}" />
+<form:form method="post" id="form" modelAttribute="formCliente"
+	action="${action}">
 
-  <spring:bind path="cliente.nome">
+	<spring:bind path="cliente.nome">
 	  <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.nome">Nome Completo</label>
 	    <form:input class="form-control"  path="cliente.nome"/>
-	    <c:if test="${status.error}">
 		    <label class="control-label" for="cliente.nome"><form:errors path="cliente.nome"/></label>
+	    <c:if test="${status.error}">
 	    </c:if>
 	  </div>
   </spring:bind>
@@ -42,7 +44,7 @@
   <spring:bind path="cliente.dataNascimento">
 	  <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.dataNascimento">Data de Nascimento</label>
-	    <form:input path="cliente.dataNascimento" class="form-control datepicker" data-date-format="dd/mm/yyyy" placeholder="dd/MM/aaaa"/>
+	    <input type="text" class="form-control datepicker" name="cliente.dataNascimento" id="cliente.dataNascimento" data-date-format="dd/mm/yyyy" placeholder="dd/MM/aaaa">
 	    <c:if test="${status.error}">
 		    <label class="control-label" for="dataNascimento"><form:errors path="cliente.dataNascimento"/></label>
 	    </c:if>
@@ -51,7 +53,7 @@
   <spring:bind path="cliente.telefone">
   	 <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.telefone">Telefone</label>
-	    <input type="text" class="form-control" name="cliente.telefone" id="cliente.telefone" placeholder="Telefone" value="${formCliente.cliente.telefone}"/>
+	    <input type="text" class="form-control" id="cliente.telefone" placeholder="Telefone">
 	    <c:if test="${status.error}">
 		    <label class="control-label" for="cliente.telefone"><form:errors path="cliente.telefone"/></label>
 	    </c:if>
@@ -60,7 +62,7 @@
   <spring:bind path="cliente.celular">
   	 <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.celular">Celular</label>
-	    <input type="text" class="form-control" name="cliente.celular" id="cliente.celular" value="${formCliente.cliente.celular}" placeholder="celular">
+	    <input type="text" class="form-control" name="cliente.celular" id="cliente.celular" placeholder="celular">
 	    <c:if test="${status.error}">
 		    <label class="control-label" for="cliente.celular"><form:errors path="cliente.celular"/></label>
 	    </c:if>
@@ -69,7 +71,7 @@
   <spring:bind path="cliente.email">
 	  <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.email">E-mail</label>
-	    <input type="email" class="form-control" name="cliente.email" id="cliente.email" value="${formCliente.cliente.email}" placeholder="E-mail">
+	    <input type="email" class="form-control" name="cliente.email" id="cliente.email" placeholder="E-mail">
 	    <c:if test="${status.error}">
 		    <label class="control-label" for="cliente.email"><form:errors path="cliente.email"/></label>
 	    </c:if>
@@ -93,26 +95,11 @@
 	    </c:if>
 	  </div>
    </spring:bind>
-   <c:if test="${formCliente.resultado eq 'erro_cadastro' }">
-		<div class="alert alert-danger" role="alert">
-			<strong>
-				<spring:message code="mensagem.erro.cadastro.cliente" />		
-			</strong>
-		</div>
-   </c:if>
-   <c:if test="${formCliente.resultado eq 'erro_ja_cadastrado' }">
-		<div class="alert alert-danger" role="alert">
-			<strong>
-				<spring:message code="mensagem.cliente.ja.cadastrado" />		
-			</strong>
-		</div>
-   </c:if>			    
-   <button type="submit" class="btn btn-default">Próximo</button>
+	<button type="submit" class="btn btn-default">Próximo</button>
 </form:form>
 </div>
 <script>
 $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy', maxDate: 0});
-
 $("#form").submit(function(event){
 	
 	var $home = $('#home').attr('value');
@@ -133,19 +120,19 @@ $("#form").submit(function(event){
 	    contentType: false,
 	  	processData: false,
 	    success: function (returndata) {
-	    	pagina = $(returndata).filter('#pagina')[0];
+	    	//pagina = $(returndata).filter('#pagina')[0];
+	    	$("#cadastroCliente").html(returndata);	
+	    	/**
 	    	
-	    	if(pagina != 'undefined' ||  pagina.value == 'paginaPedido'){
+	    	if(pagina.value == 'paginaPedido'){
 		    	$("#conteudo").html(returndata);	
 	    		
 	    	}else{
-	    		$("#cadastro").html(returndata);	
+	    		
 	    	}
-	    	
-	    	$(window).scrollTop(0);
+	    	*/
 	    }
     });
 });		
 </script>
-
 </html>

@@ -165,7 +165,52 @@ input:-webkit-autofill {
 	background-color: white;
 	
 }
+.none{
+	display: none;
+}
 
+.botaoBusca{
+	display: inline-block;
+	text-align: right;
+}
+.pesquisaDesktop{
+ 	display: none !important;
+ }
+.pesquisaMobile{
+	display: none;
+}
+@media screen and (min-width: 768px) {
+  .pesquisaDesktop{
+  	display: inline !important;
+  }
+  .pesquisaMobile{
+	display: none !important;
+  }	
+}
+} 
+
+
+.navbar-inverse {
+
+  .navbar-toggle-always {
+    border-color: @navbar-inverse-toggle-border-color;
+    &:hover,
+    &:focus {
+      background-color: @navbar-inverse-toggle-hover-bg;
+    }
+    .icon-bar-always {
+      background-color: @navbar-inverse-toggle-icon-bar-bg;
+    }
+  }
+}
+
+.displayBlock{
+	display: block !important;
+}
+
+.navMenu{
+	border-bottom: border: 3px #1491D4  !important;	
+}
 .fieldFormulario{
 
 	

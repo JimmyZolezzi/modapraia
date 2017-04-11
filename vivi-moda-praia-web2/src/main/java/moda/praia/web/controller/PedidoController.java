@@ -2,22 +2,23 @@ package moda.praia.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import moda.praia.modulo.clientes.bean.Cliente;
 
 @Controller
 @Transactional
 public class PedidoController {
 
 	
-	@RequestMapping(value = "/pagina/finalizar/pedido",method = RequestMethod.GET)
+	@RequestMapping(value = "/finalizar-pedido",method = RequestMethod.GET)
 	public String irParafinalizarPedido(){
-		
-		//logado ir para pagina de finalizar pedido
-		
-		//nao logado ir para pagina de login
 		
 		
 		return "pages/login-cliente";
 	}
+	
+	
 }

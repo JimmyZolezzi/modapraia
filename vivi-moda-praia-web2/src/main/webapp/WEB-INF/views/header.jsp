@@ -20,7 +20,7 @@
 </style>
 <div id="wrapper">
 
-	<nav id="navmenu"  class="fontePadrao navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<nav id="navmenu"  style="border-bottom: 2px #1491D4 solid;"  class="fontePadrao navbar  navbar-inverse navbar-fixed-top navbar-dark" role="navigation">
 	<div class="container" >
 
 
@@ -31,6 +31,9 @@
 					class="icon-bar"> </span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
+			<button type="button" onclick="aparecerOuEsconderPesquisa();" class="glyphicon glyphicon-search navbar-toggle">
+			</button>		
+			<button type="button" class="glyphicon glyphicon-log-in navbar-toggle" data-toggle="modal" data-target="#login-modal"></button>
 
 			<a class="navbar-brand" href="#">
 				<img src="<c:url value="/imgs/LogoSunVibesNormalBrancoAzulStroke.png"  />"/>
@@ -38,9 +41,9 @@
 			<div style="padding-top: 1.1em;padding-left: 1em;">
 			</div>
 		</div>
-
-
-
+		<div id="pesquisaComponente" class="pesquisaMobile none">
+			<jsp:include page="pages/componentes/pesquisa-produtos-mobile.jsp" />	
+		</div>
 		<style type="text/css">
 			.semfoco a:focus{
 				color:black !important;
@@ -76,11 +79,16 @@
 							<a href="<c:url value="/produtos/{{categoria.id}}/{{subcategoria.id}}" />">{{subcategoria.descricao}}</a></li>
 						</ul>
 					</li>
+					
 			</ul>
-
+			<div id="pesquisaComponenteDesktop" class="pesquisaDesktop" style="float: right;margin-top: 1em;">
+				<jsp:include page="pages/componentes/pesquisa-produtos.jsp" />	
+			</div>
+			<button type="button" class="glyphicon glyphicon-log-in navbar-toggle displayBlock" data-toggle="modal" data-target="#login-modal">
+			</button>	
+			
 		</div>
-		<jsp:include page="pages/componentes/pesquisa-produtos.jsp" />
 	</div>
-
-	</nav>
+</nav>
+		
 </div>

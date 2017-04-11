@@ -80,3 +80,5 @@
 
 	  	</div>
 	</div>
+<script src="<c:url value="/js/site/zoomImagem.js"  />"></script>
+<script src="<c:url value="/js/site/scroolThumbsImage.js"  />"></script>

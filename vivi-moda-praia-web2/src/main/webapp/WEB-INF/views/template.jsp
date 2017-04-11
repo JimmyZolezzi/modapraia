@@ -23,7 +23,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/site/scrollthumbsImage.css" />" >
 <!-- Custom CSS -->
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/heroic-features.css" />">
-
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/site/login-modal.css" />">
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -58,7 +58,8 @@
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<c:url value="/js/bootstrap.min.js" />"></script>
-		
+	<script src="<c:url value="/js/site/pesquisaProdutos.js" />"></script>	
+	<jsp:include page="pages/componentes/modal-login.jsp" />
 </body>
 </html>
 <script>
@@ -145,7 +146,5 @@
 		    }
 		  });
 	}
+	window.addEventListener("resize", onResize);
 </script>
-<script src="<c:url value="/js/jquery.formatCurrency-1.4.0.min.js" />"></script>
-<script src="<c:url value="/js/site/zoomImagem.js"  />"></script>
-<script src="<c:url value="/js/site/scroolThumbsImage.js"  />"></script>
