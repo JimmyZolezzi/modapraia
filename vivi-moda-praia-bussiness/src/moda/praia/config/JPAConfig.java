@@ -2,8 +2,10 @@ package moda.praia.config;
 
 
 
+import moda.praia.modulo.clientes.repositorios.ClienteRepository;
 import moda.praia.modulo.estoque.repositorios.HistoricoMovimentacaEstoqueRepository;
 import moda.praia.modulo.estoque.repositorios.ItemProdutoEstoqueRepository;
+import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.repositorios.ItemProdutoRepository;
 import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
 
@@ -14,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @ComponentScan({"moda.praia.modulo","moda.praia.modulo.produtos","moda.praia.modulo.produtos.dao"})
-@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class,ItemProdutoRepository.class,ItemProdutoEstoqueRepository.class, HistoricoMovimentacaEstoqueRepository.class})
+@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class,ItemProdutoRepository.class,ItemProdutoEstoqueRepository.class, HistoricoMovimentacaEstoqueRepository.class, ClienteRepository.class})
 @ImportResource("classpath:config-jpa-spring.xml")
 //@EnableSpringDataWebSupport
 public class JPAConfig {

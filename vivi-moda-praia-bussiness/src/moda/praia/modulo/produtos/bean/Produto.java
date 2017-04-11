@@ -86,6 +86,12 @@ public class Produto {
 	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	@JsonProperty(value = "itensProduto")
 	private List<ItemProduto> itensProduto;
+	@JsonProperty(value = "comprimento")
+	private double comprimento;
+	@JsonProperty(value = "altura")
+	private double altura;
+	@JsonProperty(value = "largura")
+	private double largura;
 	
 	
 	public long getId() {
@@ -172,6 +178,24 @@ public class Produto {
 	}
 	public void setItensProduto(List<ItemProduto> itensProduto) {
 		this.itensProduto = itensProduto;
+	}
+	public double getComprimento() {
+		return comprimento;
+	}
+	public void setComprimento(double comprimento) {
+		this.comprimento = comprimento;
+	}
+	public double getAltura() {
+		return altura;
+	}
+	public void setAltura(double altura) {
+		this.altura = altura;
+	}
+	public double getLargura() {
+		return largura;
+	}
+	public void setLargura(double largura) {
+		this.largura = largura;
 	}
 	@Override
 	public int hashCode() {

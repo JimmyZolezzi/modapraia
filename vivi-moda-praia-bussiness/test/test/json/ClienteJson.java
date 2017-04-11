@@ -15,7 +15,7 @@ public class ClienteJson {
 		
 		Cliente cliente = new Cliente();
 		cliente.setContato("Jimmy");
-		cliente.setCpf("36816511832");
+		cliente.setCpfCnpj("36816511832");
 		cliente.setRg("442490896");
 		cliente.setTelefone("1139432495");
 		cliente.setCelular("962124711");

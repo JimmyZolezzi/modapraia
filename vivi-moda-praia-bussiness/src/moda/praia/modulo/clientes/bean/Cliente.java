@@ -33,6 +33,8 @@ public class Cliente {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonProperty(value = "id")
 	private long id;
+	@JsonProperty(value = "nome")
+	private String nome;
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty(value = "dataNascimento")
 	@JsonFormat(locale = "pt_br", shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
@@ -49,8 +51,8 @@ public class Cliente {
 	private String statusCliente;
 	@JsonProperty(value = "rg")
 	private String rg;
-	@JsonProperty(value = "cpf")
-	private String cpf;
+	@JsonProperty(value = "cpfOuCnpj")
+	private String cpfCnpj;
 	@Enumerated(EnumType.STRING)
 	@JsonProperty(value = "tipoCliente")
 	private TipoCliente tipoCliente;
@@ -60,12 +62,22 @@ public class Cliente {
 	@ManyToOne(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	@JsonProperty(value = "enderecoEntrega")
 	private Endereco enderecoEntrega;
+	@JsonProperty(value = "email")
+	private String email;
+	@JsonProperty(value = "senha")
+	private String senha;
 	
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	public Calendar getDataNascimento() {
 		return dataNascimento;
@@ -109,11 +121,11 @@ public class Cliente {
 	public void setRg(String rg) {
 		this.rg = rg;
 	}
-	public String getCpf() {
-		return cpf;
+	public String getCpfCnpj() {
+		return cpfCnpj;
 	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
 	}
 	public TipoCliente getTipoCliente() {
 		return tipoCliente;
@@ -134,6 +146,19 @@ public class Cliente {
 	}
 	public void setEnderecoEntrega(Endereco enderecoEntrega) {
 		this.enderecoEntrega = enderecoEntrega;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getSenha() {
+		return senha;
+	}
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public final static String ATIVO = "ativo";
