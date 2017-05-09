@@ -3,17 +3,11 @@ package test;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 
-import javax.xml.rpc.ServiceException;
 
-import moda.praia.modulo.correios.webservices.CResultado;
-import moda.praia.modulo.correios.webservices.CServico;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSLocator;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSSoap;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSSoapStub;
-import moda.praia.modulo.correios.webservices.CodigosServicos;
+
 
 public class WebServiceCorreioTest {
-	
+	/*
 	public static void main(String[] args) throws ServiceException, RemoteException {
 		
 		//Parametros
@@ -40,5 +34,5 @@ public class WebServiceCorreioTest {
 		System.out.println(resultado.getServicos()[0].getValor());
 		System.out.println(resultado.getServicos()[0].getPrazoEntrega());
 	}
-
+	*/
 }

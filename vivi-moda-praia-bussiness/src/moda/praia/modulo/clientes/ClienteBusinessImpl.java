@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ public class ClienteBusinessImpl implements ClienteBusiness{
 	
 	private final Logger log = Logger.getLogger(ClienteBusinessImpl.class);
 	private final ClienteRepository clienteRepository;
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public ClienteBusinessImpl(ClienteRepository clienteRepository) {
@@ -29,8 +32,6 @@ public class ClienteBusinessImpl implements ClienteBusiness{
 	
 	@Override
 	public boolean cadastrarCliente(Cliente cliente) throws ClienteJahCadastradoException{
-
-		
 			
 			if(cliente != null && cliente.getEmail() != null && !cliente.getEmail().equals("")){
 				String email = cliente.getEmail();
@@ -41,7 +42,7 @@ public class ClienteBusinessImpl implements ClienteBusiness{
 					if(cliente.getSenha() != null){
 						
 						try{
-							String senhaCriptografada = Criptografia.criptografaSenha(cliente.getSenha()); 
+							String senhaCriptografada = passwordEncoder.encode(cliente.getSenha()); 
 							cliente.setSenha(senhaCriptografada);
 							cliente.setStatusCliente(Cliente.ATIVO);
 							clienteRepository.save(cliente);

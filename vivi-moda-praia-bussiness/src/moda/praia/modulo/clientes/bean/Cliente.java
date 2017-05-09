@@ -1,5 +1,6 @@
 package moda.praia.modulo.clientes.bean;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Cacheable;
@@ -28,8 +29,10 @@ import moda.praia.modulo.endereco.Endereco;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @JsonRootName(value = "cliente")
-public class Cliente {
+public class Cliente implements Serializable{
 	
+	private static final long serialVersionUID = 5982718144647039827L;
+
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonProperty(value = "id")
 	private long id;

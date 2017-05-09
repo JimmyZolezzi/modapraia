@@ -1,6 +1,8 @@
 package moda.praia.modulo.carrinho;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,26 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.rpc.ServiceException;
+import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
-import moda.praia.modulo.correios.bean.Pacote;
-import moda.praia.modulo.correios.webservices.CResultado;
-import moda.praia.modulo.correios.webservices.CServico;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSLocator;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSSoap;
-import moda.praia.modulo.correios.webservices.CalcPrecoPrazoWSSoapStub;
-import moda.praia.modulo.correios.webservices.CodigosServicos;
 import moda.praia.modulo.pedido.bean.ItemPedidoTamanho;
 import moda.praia.modulo.pedido.bean.Pedido;
 import moda.praia.modulo.pedido.bean.ProdutoPedido;
 import moda.praia.modulo.produtos.ProdutoBusinessImpl;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.uteis.Valores;
+import web.services.correios.CResultado;
+import web.services.correios.CalcPrecoPrazoWSSoap;
 
 @Service
 @Scope(value="session",proxyMode = ScopedProxyMode.INTERFACES)
@@ -37,6 +34,7 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 
 	private Map<String, ProdutoPedido> mapProdutoPedidos = new HashMap<>(); 
 	private Pedido pedido;
+	private String cep;
 	
 	@Override
 	public void colocarProdutoCarrinho(Produto produto, int quantidade) {
@@ -53,9 +51,7 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 		}
 	}
 
-	@Override
-	public Pedido obterPedidoCarrinho() {
-		
+	private void preencherPedido (){
 		pedido = new Pedido();
 		
 		Set<String> chavesProdutoPedido = mapProdutoPedidos.keySet();
@@ -68,6 +64,16 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 		}
 		pedido.setProdutosPedido(listaProdutoPedido);
 		pedido.setValorProdutos(totalProdutos);
+	}
+	
+	
+	@Override
+	public Pedido obterPedidoCarrinho() {
+
+		if(pedido == null){
+			pedido = new Pedido();
+		}
+	
 		return pedido;
 	}
 
@@ -75,6 +81,8 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 	public boolean excluirProdutoCarrinho(Produto produto) {
 
 		mapProdutoPedidos.remove(produto.getId());
+		preencherPedido();
+		
 		return true;
 	}
 
@@ -87,6 +95,8 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 			produtoPedido.setChave(chave);
 			mapProdutoPedidos.put(chave, produtoPedido);
 		}
+		
+		preencherPedido();
 		
 	}
 	
@@ -116,7 +126,8 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 		BigDecimal total = new BigDecimal(0);
 		total = total.add(produtoPedido.getValorUnitario()).multiply(new BigDecimal(quantidade));
 		produtoPedido.setValorToral(total);
-		
+		preencherPedido();
+		calcularFretePedido(cep);
 		
 	}
 
@@ -124,59 +135,68 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 	public void excluirProdutoPedidoCarrinho(String chave) {
 
 		mapProdutoPedidos.remove(chave);
+		preencherPedido();
+		calcularFretePedido(cep);
 	}
 
 	@Override
 	public BigDecimal calcularFretePedido(String cep) {
+		this.cep = cep;
 		
 		Pedido pedido = obterPedidoCarrinho();
 		//obter pacote ou pacotes de entrega
-		List<Pacote> pacotes = null;
+		//List<Pacote> pacotes = null;
 		
-		
-		//Parametros
-		String nCdEmpresa = "";
-		String sDsSenha = "";
-		String nCdServico = CodigosServicos.SEDEX_VAREJO;
-		String sCepOrigem = "01311300";
-		String sCepDestino = cep;
-		String nVlPeso = "0.2";
-		int nCdFormato = 1;
-		BigDecimal nVlComprimento = new BigDecimal(27);
-		BigDecimal nVlAltura = new BigDecimal(9);
-		BigDecimal nVlLargura = new BigDecimal(18);
-		BigDecimal nVlDiametro = new BigDecimal(0);
-		String sCdMaoPropria = "N";
-		BigDecimal nVlValorDeclarado = pedido.getValorProdutos();
-		String sCdAvisoRecebimento = "S";
-		
-		CalcPrecoPrazoWSLocator locator = new CalcPrecoPrazoWSLocator();
+		URL url;
 		try {
+			url = new URL("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx?WSDL");
 			
-			CalcPrecoPrazoWSSoapStub stub = (CalcPrecoPrazoWSSoapStub) locator.getPort(CalcPrecoPrazoWSSoap.class);
-			CResultado resultado;
-			resultado = stub.calcPrecoPrazo(nCdEmpresa, sDsSenha, nCdServico, sCepOrigem, sCepDestino, nVlPeso, nCdFormato, nVlComprimento, nVlAltura, nVlLargura, nVlDiametro, sCdMaoPropria, nVlValorDeclarado, sCdAvisoRecebimento);
-			if(resultado.getServicos() != null && resultado.getServicos().length >=1){
-				CServico servico = resultado.getServicos()[0];
-				if(servico != null && (servico.getErro()==null || servico.getErro().equals(""))){
-					String valorFreteString = servico.getValor();
-					BigDecimal valorFrete = new BigDecimal(valorFreteString);
-					pedido.setValorFrete(valorFrete);
-					return valorFrete;
-				}
-			}
+			   //1st argument service URI, refer to wsdl document above
+	        QName qname = new QName("http://tempuri.org/", "CalcPrecoPrazoWS");
+
+	        javax.xml.ws.Service service = javax.xml.ws.Service.create(url, qname);
+	        CalcPrecoPrazoWSSoap calcPrecoPrazoWSSoap = service.getPort(CalcPrecoPrazoWSSoap.class);
+	        
+	    	
+			//Parametros
+			String nCdEmpresa = "";
+			String sDsSenha = "";
+			String nCdServico = "04014";
+			String sCepOrigem = "02989010";
+			String sCepDestino = "01311300";
+			String nVlPeso = "0.2";
+			int nCdFormato = 1;
+			BigDecimal nVlComprimento = new BigDecimal(27);
+			BigDecimal nVlAltura = new BigDecimal(9);
+			BigDecimal nVlLargura = new BigDecimal(18);
+			BigDecimal nVlDiametro = new BigDecimal(0);
+			String sCdMaoPropria = "N";
+			BigDecimal nVlValorDeclarado = pedido.getValorProdutos();
+			String sCdAvisoRecebimento = "S";
+	        
+	        CResultado cresultado = calcPrecoPrazoWSSoap.calcPrecoPrazo(nCdEmpresa, sDsSenha, nCdServico, sCepOrigem, sCepDestino, nVlPeso, nCdFormato, nVlComprimento, nVlAltura, nVlLargura, nVlDiametro, sCdMaoPropria, nVlValorDeclarado, sCdAvisoRecebimento);
+	        
+	        if(cresultado != null && cresultado.getServicos() !=null && cresultado.getServicos().getCServico() !=null && cresultado.getServicos().getCServico().size()>=1){
+	        	
+	        	String valorFreteString =  cresultado.getServicos().getCServico().get(0).getValor();
+	        	valorFreteString = Valores.desformataMoeda(valorFreteString);
+	        	
+	        	BigDecimal valorFrete = new BigDecimal(valorFreteString);
+	        	if(pedido != null){
+	        		pedido.setValorFrete(valorFrete);
+	        	}
+	        	BigDecimal valorTotal = new BigDecimal(0);
+	        	valorTotal = valorTotal.add(valorFrete).add(pedido.getValorProdutos());
+	        	pedido.setValorTotal(valorTotal);
+	        	return valorFrete;
+	        	
+	        }
 			
-	
-		} catch (RemoteException e) {
-		
-			log.error(e.getMessage());
-		
-		} catch (ServiceException e) {
-	
+		} catch (MalformedURLException e) {
+			
 			log.error(e.getMessage());
 		}
-		
-		
+        
 		return null;
 	}
 
