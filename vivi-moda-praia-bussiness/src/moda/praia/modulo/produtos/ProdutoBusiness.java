@@ -1,7 +1,9 @@
 package moda.praia.modulo.produtos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import moda.praia.modulo.produtos.bean.Categoria;
@@ -20,9 +22,12 @@ public interface ProdutoBusiness {
 	
 	//Pesquisa de Produtos
 	public Produto pesquisarProduto(long id);
+	public Produto pesquisaProdutoCarrinho(long id);
 	public List<Produto> pesquisarProdutos(int campoOrdenacao, int posicaoInicial, int quantidadeRegistros);
 	public List<Produto> pesquisarProdutosPalavraChave(String palavraChave, int quantidadeMaxRegistros);
 	public List<Produto> pesquisaProdutos();
+	public Page<Produto> pesquisaProdutos(Integer pageNumber);
+	public Page<Produto> pesquisaProdutosDestaque(Integer pageNumber);
 	public List<Produto> pesquisaProdutos(int idCategoria);
 	public List<Produto> pesquisaProdutos(Subcategoria subcategoria);
 	public List<Produto> pesquisaProdutos(String descricao, int quantidade);
@@ -42,6 +47,6 @@ public interface ProdutoBusiness {
 	public List<Subcategoria> pesquisarSubcategoriasPalavraChave(String palavraChave, int quantidadeMaxRegistros);
 	//Consulta Imagem
 	public ImagemProduto pesquisaImagemProdutoPorID(long id);
-	
+	public BigDecimal calcularValorProdutoComDesconto(BigDecimal valorProduto, BigDecimal percenutalDesconto);
 	
 }

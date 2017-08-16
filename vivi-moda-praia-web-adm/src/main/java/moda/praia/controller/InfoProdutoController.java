@@ -41,11 +41,20 @@ public class InfoProdutoController {
 	
 	
 	@RequestMapping(value = "/info-produto", method = RequestMethod.GET)
-	public String infoProduto(@RequestParam("idProduto") long idProduto, Model model){
+	public String infoProduto(@RequestParam("idProduto") long idProduto,@RequestParam("msg")String msg, Model model){
+
+		populateForm(model, idProduto);
+		model.addAttribute("msg", msg);
+		
+		return "pages/componentes/produto-info";
+	}
+	
+	@RequestMapping(value = "/detalhe-produto", method = RequestMethod.GET)
+	public String detalheProduto(@RequestParam("idProduto") long idProduto, Model model){
 
 		populateForm(model, idProduto);
 		
-		return "pages/produto-info";
+		return "pages/detalhes-produto";
 	}
 	
 	@RequestMapping(value = "/info-produto/add/foto", method = RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -64,7 +73,7 @@ public class InfoProdutoController {
 			
 		}
 			
-		return "pages/produto-info";
+		return "pages/componentes/produto-info";
 	}
 	
 	

@@ -31,6 +31,7 @@
 		<servlet-name>imageServlet</servlet-name>
 		<url-pattern>/image/*</url-pattern>
 	</servlet-mapping>
+	
 	<filter>
 		<filter-name>SetCharacterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

@@ -27,11 +27,13 @@
 			  					<td>${itemProduto.nome}</td>
 			  					<td>${itemProduto.tipoMedida.nome}</td>
 			  					<td>
-			  						<c:forEach var="itemEstoque" items="${itemProduto.itensEstoque}">
+			  						<c:forEach var="itemEstoque" items="${itemProduto.mapItemProdutoEstoque}">
 			  							<strong>Tamanho: </strong>
-			  							${itemEstoque.tamanho}
+			  							${itemEstoque.value.tamanho}
 			  							<strong>Quantidade: </strong>
-			  							${itemEstoque.quantidade}<br/>
+			  							${itemEstoque.value.quantidade}
+			  							<strong>Reservado: </strong>
+			  							${itemEstoque.value.quantidadeReservada}<br/>
 			  						</c:forEach>
 			  					</td>
 			  					<td>

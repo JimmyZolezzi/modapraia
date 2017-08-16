@@ -3,6 +3,7 @@ package test.json;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,7 +55,7 @@ public class PedidoJson {
 		produtoPedido1.setProduto(produto1);
 		produtoPedido1.setQuantidade(2);
 		produtoPedido1.setValorUnitario(new BigDecimal(10));
-		produtoPedido1.setValorToral(new BigDecimal(20));
+		produtoPedido1.setValorTotal(new BigDecimal(20));
 		lista.add(produtoPedido1);
 		//produto 2
 		ProdutoPedido produtoPedido2 = new ProdutoPedido();
@@ -68,7 +69,7 @@ public class PedidoJson {
 		produtoPedido2.setProduto(produto2);
 		produtoPedido2.setQuantidade(3);
 		produtoPedido2.setValorUnitario(new BigDecimal(10));
-		produtoPedido2.setValorToral(new BigDecimal(30));
+		produtoPedido2.setValorTotal(new BigDecimal(30));
 		lista.add(produtoPedido2);
 		
 		
@@ -84,7 +85,7 @@ public class PedidoJson {
 		cliente.setTelefone("1139432495");
 		cliente.setCelular("962124711");
 		cliente.setId(1);
-		cliente.setDataNascimento(Calendar.getInstance());
+		cliente.setDataNascimento(new Date());
 		cliente.setObservacao("Cliente Especial");
 		cliente.setTipoCliente(TipoCliente.FISICO);
 		cliente.setStatusCliente("ativo");

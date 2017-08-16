@@ -1,6 +1,7 @@
 package test.json;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,7 @@ public class ClienteJson {
 		cliente.setTelefone("1139432495");
 		cliente.setCelular("962124711");
 		cliente.setId(1);
-		cliente.setDataNascimento(Calendar.getInstance());
+		cliente.setDataNascimento(new Date());
 		cliente.setObservacao("Cliente Especial");
 		cliente.setTipoCliente(TipoCliente.FISICO);
 		cliente.setStatusCliente("ativo");

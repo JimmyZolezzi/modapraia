@@ -4,16 +4,14 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>    
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
 <div id="cadastro">
 <input type="hidden" id="pagina" value="enderecoCliente" /> 
 <spring:url var="action" value="/finaliza/cadastramento/cliente" />
 <c:url var="home" value="/" scope="request" />	
 <input id="home" type="hidden" value="${home}"/>
-<br/><br/><br/>
 	<h3>Cadastro de Endereço</h3>
-<form:form method="post" id="form" modelAttribute="formEnderecoCliente" action="${action}">
+<form:form method="post" id="formCadastroEndereco" modelAttribute="formEnderecoCliente" action="${action}">
+
 <form:hidden path="idCliente"/>
   <spring:bind path="endereco.cep">
 	  <div class="form-group ${status.error?'has-error':''} ">
@@ -79,23 +77,28 @@
   <a class="btn btn-default" onclick="voltarCadastroCliente();">Voltar<i class="fa fa-angle-right"></i></a>
   <button type="submit" class="btn btn-primary">Finalizar</button>
 </form:form>
-</div>
-<script>
-
-$("#form").submit(function(event){
+<script type="text/javascript">
+$("#formCadastroEndereco").submit(function(event){
 	
 	var $home = $('#home').attr('value');
 	event.preventDefault();
 	// setup some local variables
-	var $form = $("#form");
+	var $form = $("#formCadastroEndereco");
 	
 	// let's select and cache all the fields
 	// serialize the data in the form
 	var formData = new FormData($(this)[0]);
+	
+	var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+	var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+	var csrfToken = $("meta[name='_csrf']").attr("content");
+	var headers = {};
+	headers[csrfHeader] = csrfToken;
 	// fire off the request to /action
 	$.ajax({
 	    url: $form.attr('action'),
 	    type: 'POST',
+	    headers: headers,
 	    data: formData,
 	    async: true,
 	    cache: false,
@@ -114,9 +117,9 @@ $("#form").submit(function(event){
 	    	}
     	}
 	});
-});	
+});
 function buscarEnderecoPorCEP(){
-		
+	
 	var cep = document.getElementById('endereco.cep').value;
 	var idCliente = document.getElementById('idCliente').value;
 	var parametros = 'cep=' + cep + '&idCliente=' + idCliente;
@@ -135,25 +138,5 @@ function buscarEnderecoPorCEP(){
 	  });
 	
 }
-function voltarCadastroCliente(){
-	var idCliente = document.getElementById('idCliente').value;
-	var parametros = 'idCliente=' + idCliente;
-	var home = $('#home').attr('value');
-	$.ajax({
-		url: home + 'voltar/cadastro/cliente',
-		type: 'GET',
-		data: parametros,
-		async:true,
-		cache: false,
-		contentType: false,
-	    processData: false,
-		success: function (returnData){
-			var divCadastro = document.getElementById("cadastro");
-			divCadastro.innerHTML = returnData;
-		}
-			
-	});
-	
-}
 </script>
-</html>
+</div>

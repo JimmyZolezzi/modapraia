@@ -2,6 +2,8 @@ package moda.praia.modulo.clientes.bean;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -41,7 +43,7 @@ public class Cliente implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty(value = "dataNascimento")
 	@JsonFormat(locale = "pt_br", shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-	private Calendar dataNascimento;
+	private Date dataNascimento;
 	@JsonProperty(value = "telefone")
 	private String telefone;
 	@JsonProperty(value = "celular")
@@ -82,10 +84,11 @@ public class Cliente implements Serializable{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Calendar getDataNascimento() {
+	public Date getDataNascimento() {
+		
 		return dataNascimento;
 	}
-	public void setDataNascimento(Calendar dataNascimento) {
+	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 	public String getTelefone() {

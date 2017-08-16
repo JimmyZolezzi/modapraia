@@ -1,6 +1,7 @@
 package moda.praia.web.controller;
 
 import moda.praia.modulo.carrinho.CarrinhoBusiness;
+import moda.praia.modulo.jsonview.Views.Public;
 import moda.praia.modulo.pedido.bean.ItemPedidoTamanho;
 import moda.praia.modulo.pedido.bean.Pedido;
 import moda.praia.modulo.pedido.bean.ProdutoPedido;
@@ -10,6 +11,7 @@ import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.web.controller.editor.ProdutoEditor;
 import moda.praia.web.controller.form.FormProdutoPedido;
 import moda.praia.web.controller.validator.ProdutoPedidoFormValidator;
+import moda.praia.web.dto.ValorPedidoFrete;
 
 import java.util.List;
 
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Controller
 @Transactional
@@ -68,8 +72,6 @@ public class CarrinhoController {
 				for (ProdutoPedido produtoPedido : produtosPedido) {
 					produtoPedido.setQuantidade(1);
 					produtoPedido.setProduto(produto);
-					produtoPedido.setValorUnitario(produto.getValor());
-					produtoPedido.setValorToral(produto.getValor());
 					carrihoBusiness.colocarProdutoCarrinho(produtoPedido);
 				}
 				Pedido pedido = carrihoBusiness.obterPedidoCarrinho();
@@ -134,6 +136,39 @@ public class CarrinhoController {
 		
 	}
 	
+	@RequestMapping(value = "/calcular/frete/pedido/carrinho",method = RequestMethod.GET)
+	public String calcularFretePedido(@RequestParam("cep") String cep, Model model){
+		
+		if(cep !=null && !cep.equals("")){
+			
+			carrihoBusiness.calcularFretePedido(cep);
+			Pedido pedido = carrihoBusiness.obterPedidoCarrinho();
+			model.addAttribute("pedido", pedido);
+		}
+		
+		return "pages/componentes/form-pedido-carrinho";
+		
+	}
+	
+	@RequestMapping(value = "/calcular/frete/pedidoJson",method = RequestMethod.GET)
+	@ResponseBody
+	@JsonView(Public.class)
+	public ValorPedidoFrete calcularFretePedidoJson(@RequestParam("cep") String cep){
+		ValorPedidoFrete valorPedidoFrete = new ValorPedidoFrete();
+		if(cep !=null && !cep.equals("")){
+			
+			carrihoBusiness.calcularFretePedido(cep);
+			Pedido pedido = carrihoBusiness.obterPedidoCarrinho();
+			if(pedido != null){
+				valorPedidoFrete.setValorFrete(pedido.getValorFrete());
+				valorPedidoFrete.setValorProdutos(pedido.getValorProdutos());
+				valorPedidoFrete.setValorTotalPedido(pedido.getValorTotal());
+			}
+		}
+
+		return valorPedidoFrete;
+	}
+
 	@RequestMapping(value = "/excluir/produto/pedido/carrinho",method = RequestMethod.GET)
 	public String excluirProdutoPedido(@RequestParam("chave")String chave, Model model){
 		

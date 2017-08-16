@@ -10,5 +10,6 @@ public interface ProdutoRepository extends JpaRepository<Produto,Long>{
 
 	public Page<Produto> findAll(Pageable pageable);
 	public Produto findById(long id);
+	public Page<Produto> findByDestaque(boolean destaque, Pageable pageable);
 
 }

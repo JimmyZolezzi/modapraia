@@ -22,7 +22,7 @@ public class CalendarddMMyyyyEditor extends PropertyEditorSupport {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			try {
 				Date dataNascimento = sdf.parse(data);
-				Calendar calendar = new GregorianCalendar();
+				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(dataNascimento);
 				this.setValue(calendar);
 				

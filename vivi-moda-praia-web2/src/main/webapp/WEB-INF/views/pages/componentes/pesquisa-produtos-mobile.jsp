@@ -5,9 +5,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <style>
 .ui-autocomplete { z-index:2000 !important; }
 
@@ -21,8 +18,15 @@
 
   $(document).ready(function(){
 	  
+	  function updateTextBox(event,ui){
+		  $(this).val(ui.item.descricao);
+			return false;
+	  }
+	  
 	  $("#txtBuscaMobile").autocomplete({
-		
+	  	minLength: 1,
+		focus: updateTextBox,
+		select:updateTextBox,
 	    source:function( request, response ) {
 	    	var pesquisa = document.getElementById('txtBuscaMobile').value;
 			var parametros = 'pesquisa=' + pesquisa;
@@ -58,7 +62,7 @@
 				  imagemProdutoProduto = produto.imagemProduto1.id;
 			  }
 		  }
-		  var urlLinkProduto = $home + 'info-produto?idProduto=' + idProduto;
+		  var urlLinkProduto = $home + 'produto/' + idProduto;
 		  var inner_html = '<div id="autocompletePesquisa"><a href="'+ urlLinkProduto +'"><div class="list_item_container"><div class="image"><img src="'+ $home +'/image?id=' + imagemProdutoProduto + '"></div><div>' + descricaoProduto + '</div><div id class="valorAutocomplete">' +  '<div> R$ ' + valor +  '</div></div></a></div>';
 	        return $( "<li></li>" )
 	            .data( "item.autocomplete", produto )

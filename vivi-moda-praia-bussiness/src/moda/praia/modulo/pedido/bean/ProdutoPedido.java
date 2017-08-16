@@ -45,7 +45,7 @@ public class ProdutoPedido {
 	@JsonProperty(value = "valorUnitario")
 	private BigDecimal valorUnitario;
 	@JsonProperty(value = "valorTotal")
-	private BigDecimal valorToral;
+	private BigDecimal valorTotal;
 	@JsonProperty(value = "itensPedidoTamanho")
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	private List<ItemPedidoTamanho> itensPedidoTamanho;
@@ -80,11 +80,11 @@ public class ProdutoPedido {
 	public void setValorUnitario(BigDecimal valorUnitario) {
 		this.valorUnitario = valorUnitario;
 	}
-	public BigDecimal getValorToral() {
-		return valorToral;
+	public BigDecimal getValorTotal() {
+		return valorTotal;
 	}
-	public void setValorToral(BigDecimal valorToral) {
-		this.valorToral = valorToral;
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 	public List<ItemPedidoTamanho> getItensPedidoTamanho() {
 		return itensPedidoTamanho;

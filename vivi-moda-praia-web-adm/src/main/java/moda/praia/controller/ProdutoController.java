@@ -1,7 +1,26 @@
 package moda.praia.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 import moda.praia.controller.converter.ConverterImagemProduto;
 import moda.praia.controller.editor.CategoriaEditor;
@@ -18,25 +37,8 @@ import moda.praia.modulo.produtos.bean.ItemProduto;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 import moda.praia.modulo.produtos.bean.TipoMedida;
+import moda.praia.uteis.Valores;
 import moda.praia.util.StatusRequest;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.fasterxml.jackson.annotation.JsonView;
 
 @Controller
 public class ProdutoController {
@@ -58,7 +60,6 @@ public class ProdutoController {
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		binder.setValidator(validator);
 		binder.registerCustomEditor(Categoria.class, categoriaEditor);
 		binder.registerCustomEditor(Subcategoria.class, subcategoriaEditor);
 //		binder.registerCustomEditor(TipoMedida.class, tipoMedidaEditor);
@@ -66,6 +67,26 @@ public class ProdutoController {
 
 	@RequestMapping(value = "/cadastro-produto", method = RequestMethod.GET)
 	public String handleRequest(Model model) {
+		
+		FormProduto formProduto = new FormProduto(new Produto());
+		
+		formProduto.setQuantidade(1);
+		ItemProduto itemProduto = new ItemProduto();
+		List<ItemProduto> itensProduto = new ArrayList<ItemProduto>();
+		itensProduto.add(itemProduto);
+		formProduto.setItensProduto(itensProduto);
+		model.addAttribute("produtoForm",formProduto);
+		populateDefaultModel(model,null);
+		model.addAttribute("foto1", null);
+		model.addAttribute("foto2", null);
+
+		return "pages/cadastro-produto";
+		
+	}
+	
+	@RequestMapping(value = "/carregar/cadastro/produto",  method = RequestMethod.GET)
+	public String carregarProdutoCadastro(Model model){
+		
 		FormProduto formProduto = new FormProduto(new Produto());
 		formProduto.setQuantidade(1);
 		ItemProduto itemProduto = new ItemProduto();
@@ -76,13 +97,60 @@ public class ProdutoController {
 		populateDefaultModel(model,null);
 		model.addAttribute("foto1", null);
 		model.addAttribute("foto2", null);
-		return "pages/cadastro-produto";
 		
+		return "pages/componentes/form-cadastro-produto";
+	}
+	
+	@RequestMapping(value = "/lista/produtos/pages/{pageNumber}",  method = RequestMethod.GET)
+	public String listaProdutos(@PathVariable Integer pageNumber, Model model){
+	
+		Page<Produto> page = produtoBusiness.pesquisaProdutos(pageNumber);
+		model.addAttribute("page", page);
+		modePagination(page, model);
+		return "pages/produtos";
+	}
+	
+	@RequestMapping(value = "/carregar/lista/produtos",  method = RequestMethod.GET)
+	public String carregarListaProdutos(Model model){
+		Integer pagina = 1;
+		Page<Produto> page = produtoBusiness.pesquisaProdutos(pagina);
+		model.addAttribute("page", page);
+		modePagination(page, model);
+		return "pages/componentes/lista-produtos";
+	}
+	
+	
+	private void modePagination(Page<Produto> page, Model model){
+		int current = page.getNumber() + 1;
+	    int begin = Math.max(1, current - 5);
+	    int end = Math.min(begin + 10, page.getTotalPages());
+
+	    model.addAttribute("produtoPage", page);
+	    model.addAttribute("beginIndex", begin);
+	    model.addAttribute("endIndex", end);
+	    model.addAttribute("currentIndex", current);
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/calcular/valorDesconto")
+	public String calcularValorComPercentualDesconto(@RequestParam("valorProduto") String valorProduto, @RequestParam("percentualDesconto") String percentualDesconto){
+		
+		valorProduto = valorProduto.replaceAll("\\.","").replace(",",".");
+		percentualDesconto = percentualDesconto.replace(",", ".");
+		BigDecimal bigDecimalValorProduto = new BigDecimal(valorProduto);
+		BigDecimal bigDecimalPercentualDesconto = new BigDecimal(percentualDesconto);
+		BigDecimal valorComDesconto = produtoBusiness.calcularValorProdutoComDesconto(bigDecimalValorProduto, bigDecimalPercentualDesconto);
+		String valorDesconStr = Valores.formataMoedaSemCifrao(valorComDesconto);
+		
+		return valorDesconStr;
 		
 	}
 	
 	@RequestMapping(value = "/produto/add", method = RequestMethod.POST)
-	public String addProduto(@ModelAttribute("produtoForm") @Validated FormProduto formProduto, BindingResult result, Model model){
+	public String addProduto(@ModelAttribute("produtoForm") FormProduto formProduto, BindingResult result, Model model){
+		
+		validator.validate(formProduto, result);
 		if(formProduto.getCategoria()!=null){
 			model.addAttribute("categoriaId",formProduto.getCategoria().getId());
 		}
@@ -107,8 +175,10 @@ public class ProdutoController {
 			
 			if(cadastrado){
 				formProduto.zerarValores();
-				model.addAttribute("msg", "Produto cadastrado com sucesso!");
-				model.addAttribute("css", "alert-success");
+				//model.addAttribute("msg", "Produto cadastrado com sucesso!");
+				//model.addAttribute("css", "alert-success");
+				return "redirect://info-produto?idProduto=" + produto.getId() + "&msg=Produto cadastrado com sucesso";
+				
 			}else{
 				model.addAttribute("msg", "Erro ao cadastrar produto!");
 				model.addAttribute("css", "alert-danger");
@@ -120,11 +190,12 @@ public class ProdutoController {
 		populateDefaultModel(model,formProduto);
 		
 		
-		return "pages/cadastro-produto";
+		return "pages/componentes/form-cadastro-produto";
 	}
 	
 	@RequestMapping(value = "/produto/alterar", method = RequestMethod.POST)
-	public String alterarProduto(@ModelAttribute("produtoForm") @Validated FormProduto formProduto, BindingResult result, Model model){
+	public String alterarProduto(@ModelAttribute("produtoForm") FormProduto formProduto, BindingResult result, Model model){
+		validator.validate(formProduto, result);
 		if(formProduto.getCategoria()!=null){
 			model.addAttribute("categoriaId",formProduto.getCategoria().getId());
 		}
@@ -149,8 +220,10 @@ public class ProdutoController {
 			
 			if(alterado){
 				formProduto.zerarValores();
-				model.addAttribute("msg", "Produto alterado com sucesso!");
-				model.addAttribute("css", "alert-success");
+				//model.addAttribute("css", "alert-success");
+				populateDefaultModel(model,formProduto);
+				return "redirect://info-produto?idProduto=" + produto.getId() + "&msg=Produto alterado com sucesso";
+				
 			}else{
 				model.addAttribute("msg", "Erro ao alterar produto!");
 				model.addAttribute("css", "alert-danger");
@@ -161,8 +234,7 @@ public class ProdutoController {
 			
 		populateDefaultModel(model,formProduto);
 		
-		
-		return "pages/cadastro-produto";
+		return "pages/componentes/form-cadastro-produto";
 	}
 	
 	@RequestMapping(value = "/produto/addItem", method = RequestMethod.POST)
@@ -195,7 +267,7 @@ public class ProdutoController {
 		formProduto.setQuantidade(itensProduto.size());
 		populateDefaultModel(model,formProduto);
 		
-		return "pages/cadastro-produto";
+		return "pages/componentes/form-cadastro-produto";
 	}
 	
 	@RequestMapping(value = "/produto/remover", method = RequestMethod.GET)
@@ -236,7 +308,7 @@ public class ProdutoController {
 		model.addAttribute("produtoForm",formProduto);
 		populateDefaultModel(model, formProduto);
 		
-		return "pages/cadastro-produto";
+		return "pages/componentes/form-cadastro-produto";
 		
 	}
 	
@@ -267,6 +339,12 @@ public class ProdutoController {
 		model.addAttribute("medidas", TipoMedida.values());
 		if(formProduto != null){
 			Categoria categoria = formProduto.getCategoria();
+			if(formProduto.getId() != 0){
+				Produto produto = produtoBusiness.pesquisarProduto(formProduto.getId());
+				if(produto != null){
+					formProduto.addProduto(produto);
+				}
+			}
 			if(categoria != null){
 				
 				model.addAttribute("subcategorias", produtoBusiness.pesquisarSubcategoria(categoria));

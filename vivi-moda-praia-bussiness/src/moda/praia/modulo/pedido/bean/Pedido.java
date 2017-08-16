@@ -1,6 +1,7 @@
 package moda.praia.modulo.pedido.bean;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -37,7 +38,7 @@ public class Pedido {
 	@ManyToOne(cascade={CascadeType.REFRESH},fetch=FetchType.LAZY)
 	@JsonProperty(value = "cliente")
 	private Cliente cliente;
-	@ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.LAZY)
+	@ManyToOne(cascade={CascadeType.REFRESH,CascadeType.MERGE},fetch=FetchType.LAZY)
 	@JsonProperty(value = "enderecoEntrega")
 	private Endereco enderecoEntrega;
 	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY)
@@ -54,6 +55,9 @@ public class Pedido {
 	private StatusPedido statusPedido;
 	@JsonProperty(value = "observacao")
 	private String observacao;
+	private Date dataPedido;
+	private Date previsaoEntrega;
+	private Date dataEntrega;
 
 	public long getId() {
 		return id;
@@ -108,6 +112,24 @@ public class Pedido {
 	}
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+	public Date getDataPedido() {
+		return dataPedido;
+	}
+	public void setDataPedido(Date dataPedido) {
+		this.dataPedido = dataPedido;
+	}
+	public Date getPrevisaoEntrega() {
+		return previsaoEntrega;
+	}
+	public void setPrevisaoEntrega(Date previsaoEntrega) {
+		this.previsaoEntrega = previsaoEntrega;
+	}
+	public Date getDataEntrega() {
+		return dataEntrega;
+	}
+	public void setDataEntrega(Date dataEntrega) {
+		this.dataEntrega = dataEntrega;
 	}
 
 }

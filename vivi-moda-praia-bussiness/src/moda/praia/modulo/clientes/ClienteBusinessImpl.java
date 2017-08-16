@@ -122,4 +122,16 @@ public class ClienteBusinessImpl implements ClienteBusiness{
 		}
 	}
 
+	@Override
+	public void removerCliente(Cliente cliente) {
+		
+		try{
+			clienteRepository.delete(cliente);
+			
+		}catch(Exception e){
+		
+			log.error("Erro ao tentar remover o cliente " + e.getMessage());
+		}
+	}
+
 }

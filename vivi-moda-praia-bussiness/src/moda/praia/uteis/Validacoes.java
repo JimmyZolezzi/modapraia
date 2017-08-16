@@ -69,21 +69,5 @@ public class Validacoes {
 	}
 	
 	
-	public static void main(String[] args) {
-		
-		String numero = "11111111112";
-		
-		System.out.println("Celular: " + Validacoes.validarNumeroTelefone(numero));
-		
-		String email = "11111_2.teste@gmail.com";
-		System.out.println("Email: " + Validacoes.validaEmail(email));
-		
-		String telefone = "39432495";
-		System.out.println("Telefone: " + Validacoes.validarNumeroTelefone(telefone));
-		
-		String senha = "oOO@11111";
-		System.out.println("Senha: " + Validacoes.validaSenha(senha));
-		System.out.println("Senha Criptografada: " + Criptografia.criptografaSenha(senha));
-		
-	}
+	
 }

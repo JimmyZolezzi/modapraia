@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,7 @@ public class ProdutoInfoController {
 	private ProdutoEditor produtoEditor;
 	@Autowired
 	private ImagemProdutoEditor imagemProdutoEditor;
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -41,14 +43,24 @@ public class ProdutoInfoController {
 		
 	}
 	
-	@RequestMapping(value = "/info-produto", method = RequestMethod.GET)
-	public String infoProduto(@RequestParam("idProduto") long idProduto, Model model){
+	@RequestMapping(value = "/produto/{idProduto}", method = RequestMethod.GET)
+	public String infoProduto(@PathVariable("idProduto") long idProduto, Model model){
 
 		populateForm(model, idProduto,1);
 		
 		return "pages/produto-info";
 	}
-	 
+	
+	@RequestMapping(value = "/mudar/foto", method = RequestMethod.GET)
+	public String mudarFotoProduto(Model model, @RequestParam("idFoto") String idFoto){
+		
+		if(idFoto != null && idFoto.matches("[0-9].*")){
+			model.addAttribute("idProdutoFoto", idFoto);
+			
+		}
+		return "pages/componentes/comp-foto-produto";
+		
+	}
 	
 	@RequestMapping(value = "/add/produto/pedido", method = RequestMethod.GET)
 	public String addProdutoPedido(@RequestParam("idProduto") String idProduto, @RequestParam("quantidade") String quantidade,  Model model){
@@ -67,7 +79,7 @@ public class ProdutoInfoController {
 		
 		FormProdutoPedido formProdutoPedido = new FormProdutoPedido();
 		formProdutoPedido.setQuantidade(quantidadeProdutoPedido);
-		Produto produto = produtoBusiness.pesquisarProduto(idProduto);
+		Produto produto = produtoBusiness.pesquisaProdutoCarrinho(idProduto);
 
 		for (int i = 0;i<quantidadeProdutoPedido;i++) {
 			ProdutoPedido produtoPedido = new ProdutoPedido();
@@ -88,7 +100,7 @@ public class ProdutoInfoController {
 			produtoPedido.setProduto(produto);
 			produtoPedido.setValorUnitario(produto.getValor());
 			BigDecimal valorTotal = produto.getValor().multiply(new BigDecimal(1));
-			produtoPedido.setValorToral(valorTotal);
+			produtoPedido.setValorTotal(valorTotal);
 			formProdutoPedido.getListaProdutoPedido().add(produtoPedido);
 			
 		}

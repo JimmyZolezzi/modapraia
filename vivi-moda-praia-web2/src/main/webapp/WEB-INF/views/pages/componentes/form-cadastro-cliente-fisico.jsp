@@ -5,12 +5,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <div id="cadastro">
-<br/><br/>
+
 <h3>Cadastro Cliente - Físico</h3>
 <spring:url var="action" value="/cadastrar/cliente" />
 <c:url var="home" value="/" scope="request" />	
 <input id="home" type="hidden" value="${home}"/>
-<form:form method="post" id="form" modelAttribute="formCliente" action="${action}">
+<form:form method="post" id="formCadastroCliente" modelAttribute="formCliente" action="${action}" onsubmit="onSubmitFormCadastroCliente();">
 
   <spring:bind path="cliente.nome">
 	  <div class="form-group ${status.error?'has-error':''} ">
@@ -42,7 +42,7 @@
   <spring:bind path="cliente.dataNascimento">
 	  <div class="form-group ${status.error?'has-error':''} ">
 	    <label for="cliente.dataNascimento">Data de Nascimento</label>
-	    <form:input path="cliente.dataNascimento" class="form-control datepicker" data-date-format="dd/mm/yyyy" placeholder="dd/MM/aaaa"/>
+	    <form:input path="cliente.dataNascimento" class="form-control datepicker" data-date-format="dd/mm/yyyy"  placeholder="dd/MM/aaaa"/>
 	    <c:if test="${status.error}">
 		    <label class="control-label" for="dataNascimento"><form:errors path="cliente.dataNascimento"/></label>
 	    </c:if>
@@ -106,46 +106,9 @@
 				<spring:message code="mensagem.cliente.ja.cadastrado" />		
 			</strong>
 		</div>
-   </c:if>			    
+   </c:if>
    <button type="submit" class="btn btn-default">Próximo</button>
 </form:form>
+<script src="<c:url value="/js/site/cadastroCliente.js" />"></script>
 </div>
-<script>
-$('.datepicker').datepicker({ dateFormat: 'dd/mm/yy', maxDate: 0});
 
-$("#form").submit(function(event){
-	
-	var $home = $('#home').attr('value');
-	event.preventDefault();
-	// setup some local variables
-	var $form = $("#form");
-	
-	// let's select and cache all the fields
-	// serialize the data in the form
-	var formData = new FormData($(this)[0]);
-	// fire off the request to /action
-	$.ajax({
-	    url: $form.attr('action'),
-	    type: 'POST',
-	    data: formData,
-	    async: true,
-	    cache: false,
-	    contentType: false,
-	  	processData: false,
-	    success: function (returndata) {
-	    	pagina = $(returndata).filter('#pagina')[0];
-	    	
-	    	if(pagina != 'undefined' ||  pagina.value == 'paginaPedido'){
-		    	$("#conteudo").html(returndata);	
-	    		
-	    	}else{
-	    		$("#cadastro").html(returndata);	
-	    	}
-	    	
-	    	$(window).scrollTop(0);
-	    }
-    });
-});		
-</script>
-
-</html>

@@ -2,6 +2,7 @@ package moda.praia.config;
 
 
 
+import moda.praia.modulo.avaliacao.repositorios.AvaliacaoRepository;
 import moda.praia.modulo.clientes.repositorios.ClienteRepository;
 import moda.praia.modulo.clientes.repositorios.HibernateTokenRepositoryImpl;
 import moda.praia.modulo.estoque.repositorios.HistoricoMovimentacaEstoqueRepository;
@@ -17,10 +18,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @ComponentScan({"moda.praia.modulo","moda.praia.modulo.produtos","moda.praia.modulo.produtos.dao"})
-@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class,ItemProdutoRepository.class,ItemProdutoEstoqueRepository.class, HistoricoMovimentacaEstoqueRepository.class, ClienteRepository.class, PedidoRepository.class, HibernateTokenRepositoryImpl.class})
+@EnableJpaRepositories(basePackageClasses={ProdutoRepository.class,ItemProdutoRepository.class,ItemProdutoEstoqueRepository.class, HistoricoMovimentacaEstoqueRepository.class, ClienteRepository.class, PedidoRepository.class, HibernateTokenRepositoryImpl.class, AvaliacaoRepository.class})
 @ImportResource("classpath:config-jpa-spring.xml")
 //@EnableSpringDataWebSupport
 public class JPAConfig {
+	
+	
 
 	//@Autowired
 	//private ProdutoRepository produtoRepository;

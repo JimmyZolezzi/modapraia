@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
 
 <meta charset="utf-8">
@@ -10,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="author" content="">
-
+<sec:csrfMetaTags />
 <title>
 		${title}
 </title>
@@ -18,27 +19,27 @@
 <!-- Bootstrap Core CSS -->
 
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/theme-novo2.css" />" >
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/site/vivi-moda-praia.css" />" >
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/site/zoomImagem.css" />" >
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/site/scrollthumbsImage.css" />" >
 <!-- Custom CSS -->
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/heroic-features.css" />">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/site/login-modal.css" />">
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+<script src="<c:url value="/js/site/sonic.js" />"></script>
+<script src="<c:url value="/js/site/loading.js" />"></script>
 <script src="<c:url value="/js/angular.min.js"  />"></script>
-
-<c:url var="home" value="/" scope="request" />
 <script src="<c:url value="/js/jquery.js" />"></script>
+<script src="<c:url value="/js/site/carregarCliente.js" />"></script>
+<script src="<c:url value="/js/site/jquery-ui.js"/>"></script>
+<script src="<c:url value="/js/jquery.elevatezoom.js"/>"></script>
+<link rel="stylesheet" href="<c:url value="/css/site/jquery-ui.css" />">
+<c:url var="home" value="/" scope="request" />
 
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/site/vivi-moda-praia.css" />" >
 </head>
 
 
-<body ng-app='appProduto' ng-controller='myCtrlProduto' class="textoVivi">
+<body onload="carregarUsuarioLogado();" ng-app='appProduto' ng-controller='myCtrlProduto' class="textoVivi">
+<div id="resultadoLoading" class=""></div> 
 <input id="home" type="hidden" value="${home}"/>
 	
 	<jsp:include page="header.jsp" />
@@ -47,7 +48,6 @@
 		<div id="conteudo">
 			<jsp:include page="${partial}" />
 		</div>
-		
 		<jsp:include page="footer.jsp" />
 		<hr>
 	</div>
@@ -58,11 +58,13 @@
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<c:url value="/js/bootstrap.min.js" />"></script>
-	<script src="<c:url value="/js/site/pesquisaProdutos.js" />"></script>	
+	<script src="<c:url value="/js/site/pesquisaProdutos.js" />"></script>
+		
 	<jsp:include page="pages/componentes/modal-login.jsp" />
+	
 </body>
-</html>
-<script>
+
+<script type="text/javascript">
 	var app = angular.module('appProduto', []);
 	app.controller('myCtrlProduto', function($scope, $http) {
 		var $home = $('#home').attr('value');
@@ -147,4 +149,99 @@
 		  });
 	}
 	window.addEventListener("resize", onResize);
+	// A $( document ).ready() block.
+	$(document).ready(function() {
+	});
 </script>
+<script type="text/javascript">
+	
+
+$('body').on('click', 'a', function(e) {
+	
+	e.preventDefault();
+	$("div.zoomContainer").remove();
+	
+	
+	var temOnclick = $(this).attr('onclick');
+	var hrefObject =  $(this);
+	var href = $(hrefObject).attr('href');
+	if(temOnclick === undefined && href !== undefined){
+		
+		$('#resultadoLoading').html(getAjaxLoading());
+		$('#resultadoLoading').addClass("loading");
+		
+		var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+		var csrfToken = $("meta[name='_csrf']").attr("content");
+		
+		var headers = {};
+		headers[csrfHeader] = csrfToken;
+		var parametros = 'async=true';
+		$.ajax({
+		    url: href,
+		    type: 'GET',
+		    headers: headers,
+		    data: parametros,
+		    async: true,
+		    cache: false,
+		    success: function (returndata) {
+		    	var title = $(hrefObject).html();
+		    	changeUrl(title, href);
+		    	$("#conteudo").html(returndata);
+		    	
+		    	$(".active").removeClass("active");
+		    	var li = $(hrefObject).closest('li');
+		    	li.addClass('active');
+		    	var ulCategoria = $(li).closest('ul');
+		    	var liCategoria = $(ulCategoria).closest('li');
+		    	liCategoria.addClass('active');
+		    	
+		    	scroll(0,0);
+		    	var style = $('.modal-usuario-logado').attr('style');
+		    	if(style !== undefined && style != 'display: none;') {
+		    		$('.modal-usuario-logado').modal('toggle');
+		    	}
+	    },
+		  
+		}).done(function() {
+			$('#resultadoLoading').html("");
+			$('#resultadoLoading').removeClass("loading");
+	  });
+		
+	}
+});
+
+	
+	function changeUrl(title, url) {
+	    if (typeof (history.pushState) != "undefined") {
+	        var obj = { Title: title, Url: url };
+	        history.pushState(obj, obj.Title, obj.Url);
+	        if (document.title != title) {
+	            document.title = title;
+	        }
+	    } else {
+	        alert("Browser does not support HTML5.");
+	    }
+	}
+	/*menu handler*/
+	$(function(){
+	  function stripTrailingSlash(str) {
+	    if(str.substr(-1) == '/') {
+	      return str.substr(0, str.length - 1);
+	    }
+	    return str;
+	  }
+
+	  var url = window.location.pathname;  
+	  var activePage = stripTrailingSlash(url);
+
+	  $('.nav li a').each(function(){  
+	    var currentPage = stripTrailingSlash($(this).attr('href'));
+
+	    if (activePage == currentPage) {
+	      $(this).parent().addClass('active'); 
+	    } 
+	  });
+	});
+	</script>
+</html>

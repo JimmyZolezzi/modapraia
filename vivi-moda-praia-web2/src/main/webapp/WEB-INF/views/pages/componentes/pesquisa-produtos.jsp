@@ -6,11 +6,16 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <style>
-.ui-autocomplete { z-index:2000 !important; }
 
+ .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-state-active.ui-button:hover 
+{
+  border: 1px solid #E6E1E1;
+  background: #E6E1E1;
+}
+ .ui-autocomplete {
+  position: fixed;
+}
 </style>
 <c:url var="home" value="/" scope="request" />
 <input id="home" type="hidden" value="${home}"/>
@@ -18,17 +23,23 @@
 
 
   
-
   $(document).ready(function(){
 	  
+	  function updateTextBox(event,ui){
+		  $(this).val(ui.item.descricao);
+			return false;
+	  }
 	  $("#txtBusca").autocomplete({
-		
+		minLength: 1,
+		focus: updateTextBox,
+		select:updateTextBox,
 	    source:function( request, response ) {
 	    	var pesquisa = document.getElementById('txtBusca').value;
 			var parametros = 'pesquisa=' + pesquisa;
 			var $home = $('#home').attr('value');
-			dataType: "jsonp",
-			$.ajax({
+			
+			
+			xhr = $.ajax({
 				  url: $home + 'pesquisa/produtos',
 				  type: 'GET',
 				  data: parametros,
@@ -58,12 +69,9 @@
 				  imagemProdutoProduto = produto.imagemProduto1.id;
 			  }
 		  }
-		  var urlLinkProduto = $home + 'info-produto?idProduto=' + idProduto;
-		  var inner_html = '<div id="autocompletePesquisa"><a href="'+ urlLinkProduto +'"><div class="list_item_container"><div class="image"><img src="'+ $home +'/image?id=' + imagemProdutoProduto + '"></div><div>' + descricaoProduto + '</div><div id class="valorAutocomplete">' +  '<div> R$ ' + valor +  '</div></div></a></div>';
-	        return $( "<li></li>" )
-	            .data( "item.autocomplete", produto )
-	            .append(inner_html)
-	            .appendTo( ul );
+		  var urlLinkProduto = $home + 'produto/' + idProduto;
+		  var inner_html = '<div><a href="'+ urlLinkProduto +'"><div class="list_item_container"><div class="image"><img src="'+ $home +'/image?id=' + imagemProdutoProduto + '"></div><div>' + descricaoProduto + '</div><div id class="valorAutocomplete ">' +  '<div> R$ ' + valor +  '</div></div></a></div>';
+	        return $( "<li></li>" ).append(inner_html).appendTo(ul);
 	    };
 	});
   
@@ -78,3 +86,6 @@
 	     <span class="form-control-feedback glyphicon glyphicon-search"></span>
 	 </div>
   </form>
+<style>
+
+</style>

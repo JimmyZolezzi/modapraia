@@ -3,6 +3,7 @@ package moda.praia.modulo.clientes.repositorios;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
@@ -59,11 +60,18 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
 
 		Query query = em.createQuery("select p from PersistentLogin p where p.username =:username");
 		query.setParameter("username", username);
-		PersistentLogin persistentLogin = (PersistentLogin) query.getSingleResult();
-		if (persistentLogin != null) {
-			log.info("rememberMe was selected");
-			em.remove(persistentLogin);
+		try{
+			
+			PersistentLogin persistentLogin = (PersistentLogin) query.getSingleResult();
+			if (persistentLogin != null) {
+				log.info("rememberMe was selected");
+				em.remove(persistentLogin);
+			}
+			
+		}catch(NoResultException e){
+			log.info("Nenhum token armazenado");
 		}
+		
 
 	}
 

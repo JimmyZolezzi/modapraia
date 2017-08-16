@@ -19,5 +19,8 @@
 			<value>locale\messages</value>
 		</property>
 	</bean>
+	<bean id="filterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+ 
+	</bean>	
 	
 </beans>

@@ -7,7 +7,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <input type="hidden" id="pagina" value="paginaDadosClienteCadastrado" /> 
-<br/><br/><br/><br/>
 <div class="alert alert-success" role="alert">
 	<strong>
 		<spring:message code="cliente.cadastrado.sucesso" />
@@ -32,7 +31,7 @@
 	  </div>
 	  <div class="form-group">
 	    <label>Data de Nascimento</label>
-	    <fmt:formatDate value="${cliente.dataNascimento.time}" pattern="dd/MM/yyyy" />
+	    <fmt:formatDate value="${cliente.dataNascimento}" pattern="dd/MM/yyyy" />
 	  </div>	
   	 <div class="form-group">
 	    <label>Telefone</label>

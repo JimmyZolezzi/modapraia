@@ -4,11 +4,14 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+
 <spring:url var="action" value="/produtoPedido/add/carrinho" />
 
 <form:form id="form" action="${action}" method="post" modelAttribute="formProdutoPedido">
+		<sec:csrfInput />
 		<form:hidden path="idProduto"/>
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -28,6 +31,7 @@
 					<h3 class="panel-title" ><strong>Medidas</strong></h3>
 				</div>
 				<div class="panel-body">
+				
 					<c:forEach var="itemPedidoTamanho" items="${produtoPedido.itensPedidoTamanho}" varStatus="statusItemPedidoTamanho">
 						<form:hidden path="listaProdutoPedido[${statusProdutoPedido.index }].quantidade"/>
 						
@@ -39,7 +43,11 @@
 								<form:hidden path="listaProdutoPedido[${statusProdutoPedido.index }].itensPedidoTamanho[${statusItemPedidoTamanho.index}].nome"/>
 								<form:select class="form-control text-center" path="listaProdutoPedido[${statusProdutoPedido.index }].itensPedidoTamanho[${statusItemPedidoTamanho.index}].tamanho">
 									<form:option value="">selecionar</form:option>
-									<form:options itemLabel="tamanho" itemValue="tamanho" items="${itemPedidoTamanho.itemProduto.itensEstoque}"/>
+									<c:forEach var="item" items="${itemPedidoTamanho.itemProduto.mapItemProdutoEstoque}">
+										<c:if test="${item.value.quantidade - item.value.quantidadeReservada > 0}">
+											<form:option value="${item.value.tamanho }">${item.value.tamanho }</form:option>
+										</c:if>
+									</c:forEach>
 								</form:select>
 								<label class="control-label" for="listaProdutoPedido[${statusProdutoPedido.index }].itensPedidoTamanho[${statusItemPedidoTamanho.index}].tamanho"><form:errors path="listaProdutoPedido[${statusProdutoPedido.index }].itensPedidoTamanho[${statusItemPedidoTamanho.index}].tamanho"/></label>	
 							</div>
@@ -53,15 +61,30 @@
 <script type="text/javascript">
 
 	function mudarFoto(idFotoSelecionada){
-		var $home = $('#home').attr('value');
-		var imagemSelecionada = document.getElementById('fotoSelecionada');
-		var url = 'image?id=' + idFotoSelecionada + '&tamanhoImagem=normal';
-		$(imagemSelecionada).attr('src',$home + url);
+		var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+		var csrfToken = $("meta[name='_csrf']").attr("content");
 		
-		magnificar();
+		var $home = $('#home').attr('value');
+		var parametros = 'idFoto=' + idFotoSelecionada		
+		$.ajax({
+		    url: $home + '/mudar/foto',
+		    type: 'GET',
+		    data: parametros,
+		    async: true,
+		    cache: false,
+		    contentType: false,
+		    processData: false,
+		    success: function (returndata) {
+		    	$("#divFotoProduto").html($(returndata));
+		    }
+		  });		
+		
 	}
 	
 	function removerFoto(idProduto, idImagem){
+		
+		
 		
 		var parametros = 'idProduto=' + idProduto + '&idImagemProduto=' + idImagem;
 		var $home = $('#home').attr('value');
@@ -82,6 +105,9 @@
 	}
 
 	$("#form").submit(function(event){
+		var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+		var csrfToken = $("meta[name='_csrf']").attr("content");
 		
 		var $home = $('#home').attr('value');
 		event.preventDefault();
@@ -92,9 +118,12 @@
 		// serialize the data in the form
 		var formData = new FormData($(this)[0]);
 		// fire off the request to /action
+		var headers = {};
+		headers[csrfHeader] = csrfToken;
 		$.ajax({
 		    url: $form.attr('action'),
 		    type: 'POST',
+		    headers: headers,
 		    data: formData,
 		    async: true,
 		    cache: false,
@@ -102,14 +131,15 @@
 		  	processData: false,
 		    success: function (returndata) {
 		    	pagina = $(returndata).filter('#pagina')[0];
-		    	if(pagina != 'undefined' || pagina.value == 'paginaPedido'){
+		    	if(typeof pagina != 'undefined' && pagina.value == 'paginaPedido'){
 			    	$("#conteudo").html(returndata);	
 		    		
 		    	}else{
 		    		$("#formularioProdutoPedido").html(returndata);	
 		    	}
-		    	
+		    	$("div.zoomContainer").remove();
 		    	atualizarCarrinho();
+		    	scroll(0,0);
 		    }
 	    });
 	});
@@ -131,7 +161,9 @@
 		    contentType: false,
 		    processData: false,
 		    success: function (returndata) {
+		    	$("div.zoomContainer").remove();
 		    	$("#formularioProdutoPedido").html($(returndata));
+		    	scroll(0,0);
 		    }
 		  });
 		

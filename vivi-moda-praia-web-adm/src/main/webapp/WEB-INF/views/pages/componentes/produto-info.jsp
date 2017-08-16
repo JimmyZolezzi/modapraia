@@ -5,17 +5,16 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <spring:url var="action" value="/info-produto/add/foto" />
 <form:form method="post" name="form" id="form" modelAttribute="formImagemProduto" action="${action}" enctype="multipart/form-data">
 <c:url var="home" value="/" scope="request" />
 <input id="home" type="hidden" value="${home}"/>
-<ol class="breadcrumb">
-	<li><a href="#">${produto.categoria.descricao}</a></li>
-	<li><a href="#">${produto.subcategoria.descricao}</a></li>
-	<li class="active">${produto.descricao}</li>
-</ol>
+<c:if test="${msg != null}">
+	<div class="alert alert-success">
+	 	${msg}
+	</div>
+</c:if>
 
 <div class="media">
 
@@ -37,6 +36,14 @@
 				<h3>
 					<fmt:formatNumber value="${produto.valor}" type="currency"/>
 				</h3>
+				<h4>Desconto 
+					<strong>
+						<fmt:formatNumber  value="${produto.descontoPercentual}"/>%
+					</strong>
+				</h4>
+				<strong>
+					<fmt:formatNumber value="${produto.descontoValor}" type="currency"/>
+				</strong>
 			</div>
 	  	</div>
 	</div>
@@ -85,7 +92,7 @@
 				</c:if>
 				<c:if test="${produto.imagemProduto2 !=null}">
 					<div class="col-lg-3 col-md-4 col-xs-6 thumb">
-						<a href="#" class="thumbnail">
+						<a  class="thumbnail">
 							<img class="media-object" src="<c:url value="/image?id=${produto.imagemProduto2.id}&tamanhoImagem=medio"/>" alt="Foto 2"  /> 
 						</a>
 					</div>
@@ -93,7 +100,7 @@
 				<div id="imagensProduto">
 					<c:forEach var="imagemProduto" items="${produto.imagensProduto}">
 						<div class="col-lg-3 col-md-4 col-xs-6 thumb">
-							<a href="#" class="thumbnail">
+							<a class="thumbnail link">
 								<div align="right">
 									<button type="button" class="btn btn-danger" title="Remover" onclick="removerFoto(${produto.id}, ${imagemProduto.id})">
 							    		<span>x</span>
@@ -112,9 +119,39 @@
 			<h3 class="panel-title" >Estoque</h3>
 		</div>
 	 	<div class="panel-body">
-	    	Tamanho P: 10;<br/>
-	    	Tamanho M: 20;<br/>
-	    	Tamanho G: 30;<br/>
+	    	<div class="table-responsive">
+			  <!-- Default panel contents -->
+			  	<table  class="table table-hover table-striped">
+			  		<thead>
+			  			<tr>
+			  				<th>Nome</th>
+			  				<th>Tipo Medida</th>
+			  				<th width="60%">QTD Estoque</th>
+			  			</tr>
+			  		</thead>
+			  		<tbody>
+			  			<c:forEach var="itemProduto" items="${produto.itensProduto}" >
+			  				<tr>
+			  					<td>${itemProduto.nome}</td>
+			  					<td>${itemProduto.tipoMedida.nome}</td>
+			  					<td>
+			  						<c:forEach var="item" items="${itemProduto.mapItemProdutoEstoque}">
+			  							<strong>Tamanho </strong>
+			  							${item.value.tamanho} >>
+			  							<strong>Quantidade: </strong>
+			  							${item.value.quantidade} |
+			  							<strong>Reservado: </strong>
+			  							${item.value.quantidadeReservada} |
+		  								<strong>Disponível: </strong> 
+			  							${item.value.quantidade - item.value.quantidadeReservada}<br/>
+			  						<br/>
+			  						</c:forEach>
+			  					</td>
+			  				</tr>
+			  			</c:forEach>
+			  		</tbody>
+			  	</table>
+			</div>
 	  	</div>
 	</div>
 	<div class="panel panel-default">
@@ -132,16 +169,23 @@
 <script type="text/javascript">
 
 	$("#form").submit(function(event){
+		
+		var csrfParameter = document.head.querySelector("meta[name='_csrf_parameter']").content;
+		var csrfHeader = document.head.querySelector("meta[name='_csrf_header']").content;
+		var csrfToken = document.head.querySelector("meta[name='_csrf']").content;
 	 
 	  //disable the default form submission
 	  event.preventDefault();
 	 
 	  //grab all form data  
-	  var formData = new FormData($(this)[0]);
-	  var $form = $("#form");
+	 	var formData = new FormData($(this)[0]);
+	  	var $form = $("#form");
+		var headers = {};
+		headers[csrfHeader] = csrfToken;
 	  $.ajax({
 	    url: $form.attr('action'),
 	    type: 'POST',
+	    headers:headers,
 	    data: formData,
 	    async: true,
 	    cache: false,

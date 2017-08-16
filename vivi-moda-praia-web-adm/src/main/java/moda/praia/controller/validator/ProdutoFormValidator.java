@@ -2,6 +2,7 @@ package moda.praia.controller.validator;
 
 import moda.praia.controller.form.FormProduto;
 import moda.praia.modulo.produtos.bean.Produto;
+import moda.praia.uteis.Valores;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -25,10 +26,32 @@ public class ProdutoFormValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "categoria", "NotEmpty.produtoForm.categoria");
 		
 		if(formProduto != null){
-			if(formProduto.getValor() == null || formProduto.getValor().doubleValue() < 0){
-				errors.rejectValue("valor", "NotEmpty.produtoForm.valor");
-			}
 			
+			String pesoStr = Valores.desformataMoeda(formProduto.getPesoStr());
+			String larguraStr = Valores.desformataMoeda(formProduto.getLarguraStr());
+			String alturaStr = Valores.desformataMoeda(formProduto.getAlturaStr());
+			String comprimentoStr = Valores.desformataMoeda(formProduto.getComprimentoStr());
+			String valorStr = Valores.desformataMoeda(formProduto.getValorStr());
+			//Peso
+			if(!Valores.isValor(pesoStr)){
+				errors.rejectValue("pesoStr", "invalid.produtoForm.peso");
+			}
+			//Largura
+			if(!Valores.isValor(larguraStr)){
+				errors.rejectValue("larguraStr", "invalid.produtoForm.largura");
+			}
+			//Altura
+			if(!Valores.isValor(alturaStr)){
+				errors.rejectValue("alturaStr", "invalid.produtoForm.altura");
+			}
+			//Comprimento
+			if(!Valores.isValor(comprimentoStr)){
+				errors.rejectValue("comprimentoStr", "invalid.produtoForm.comprimento");
+			}
+			//Valor
+			if(!Valores.isValor(valorStr)){
+				errors.rejectValue("valorStr", "invalid.produtoForm.valor");
+			}
 		}
 	
 	}

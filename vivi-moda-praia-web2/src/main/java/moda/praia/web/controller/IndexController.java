@@ -4,11 +4,15 @@ import java.util.List;
 
 import moda.praia.modulo.produtos.ProdutoBusiness;
 import moda.praia.modulo.produtos.bean.Categoria;
+import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,11 +27,33 @@ public class IndexController {
 	private ProdutoBusiness produtoBusiness;
 
 	@RequestMapping(value = "/home",method = RequestMethod.GET)
-	public ModelAndView handleRequest() {
+	public ModelAndView handleRequest(Model model) {
 
+	    Page<Produto> page = produtoBusiness.pesquisaProdutosDestaque(1);
+	    model.addAttribute("produtoPage", page);
+	    modePagination(page, model);
 		return new ModelAndView("home");
 	}
 	
+	@RequestMapping(value = "/produtos/destaque/pages/{pageNumber}", method = RequestMethod.GET)
+	public String pageEstoqueProduto(@PathVariable Integer pageNumber, Model model) {
+	    Page<Produto> page = produtoBusiness.pesquisaProdutosDestaque(pageNumber);
+	    model.addAttribute("produtoPage", page);
+	    modePagination(page, model);
+	    return "home";
+	}
+	
+	private void modePagination(Page<Produto> page, Model model){
+		int current = page.getNumber() + 1;
+	    int begin = Math.max(1, current - 5);
+	    int end = Math.min(begin + 10, page.getTotalPages());
+
+	    model.addAttribute("produtoPage", page);
+	    model.addAttribute("beginIndex", begin);
+	    model.addAttribute("endIndex", end);
+	    model.addAttribute("currentIndex", current);
+		
+	}
 	
 	@RequestMapping(value = "/menu/categoria",method = RequestMethod.GET)
 	@ResponseBody

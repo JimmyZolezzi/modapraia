@@ -1,5 +1,6 @@
 package moda.praia.controller.form;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,13 +10,22 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.web.multipart.MultipartFile;
 
 import moda.praia.modulo.produtos.bean.Produto;
+import moda.praia.uteis.Valores;
 
 public class FormProduto extends Produto {
 
 	private MultipartFile foto1;
 	private MultipartFile foto2;
 	private int quantidade;
-
+	private String valorStr;
+	private String pesoStr;
+	private String larguraStr;
+	private String alturaStr;
+	private String comprimentoStr;
+	private String descontoPercentualStr;
+	private boolean terDesconto;
+	private boolean terDestaque;
+	
 	public MultipartFile getFoto1() {
 		return foto1;
 	}
@@ -40,6 +50,54 @@ public class FormProduto extends Produto {
 		this.quantidade = quantidade;
 	}
 
+	public String getValorStr() {
+		return valorStr;
+	}
+
+	public void setValorStr(String valorStr) {
+		this.valorStr = valorStr;
+	}
+
+	public String getPesoStr() {
+		return pesoStr;
+	}
+
+	public void setPesoStr(String pesoStr) {
+		this.pesoStr = pesoStr;
+	}
+
+	public String getLarguraStr() {
+		return larguraStr;
+	}
+
+	public void setLarguraStr(String larguraStr) {
+		this.larguraStr = larguraStr;
+	}
+
+	public String getAlturaStr() {
+		return alturaStr;
+	}
+
+	public void setAlturaStr(String alturaStr) {
+		this.alturaStr = alturaStr;
+	}
+
+	public String getComprimentoStr() {
+		return comprimentoStr;
+	}
+
+	public void setComprimentoStr(String comprimentoStr) {
+		this.comprimentoStr = comprimentoStr;
+	}
+
+	public String getDescontoPercentualStr() {
+		return descontoPercentualStr;
+	}
+
+	public void setDescontoPercentualStr(String descontoPercentualStr) {
+		this.descontoPercentualStr = descontoPercentualStr;
+	}
+
 	public void zerarValores() {
 
 		this.setId(0);
@@ -47,7 +105,6 @@ public class FormProduto extends Produto {
 		this.setInformacoes(null);
 		this.setCategoria(null);
 		this.setSubcategoria(null);
-		this.setEstoques(null);
 		this.setTamanhoLetra(null);
 		this.setTamanhoNumerico(0);
 		this.setImagemProduto1(null);
@@ -60,18 +117,58 @@ public class FormProduto extends Produto {
 
 	}
 
+	public void addProduto(Produto produto){
+		
+		if(produto != null){
+			myCopyProperties(produto, this);
+			//Valor
+			if(produto.getValor() == null || produto.getValor().doubleValue() == 0){
+				this.setValorStr("");
+			}else{
+				this.setValorStr(Valores.formataMoedaSemCifrao(produto.getValor()));
+			}
+			//Percentual de desconto
+			if(produto.getDescontoPercentual() == null || produto.getDescontoPercentual().doubleValue() == 0){
+				this.setDescontoPercentualStr("");
+			}else{
+				this.setDescontoPercentualStr(Valores.formataMoedaSemCifrao(produto.getDescontoPercentual()));
+			}
+			//Altura
+			if(produto.getAltura() == 0){
+				this.setAlturaStr("");
+			}else{
+				this.setAlturaStr(Valores.formataMoedaSemCifrao(produto.getAltura()));
+			}
+			//Largura
+			if(produto.getLargura() == 0){
+				this.setLarguraStr("");
+			}else{
+				this.setLarguraStr(Valores.formataMoedaSemCifrao(produto.getLargura()));
+			}
+			//Comprimento
+			if(produto.getComprimento() == 0){
+				this.setComprimentoStr("");
+			}else{
+				this.setComprimentoStr(Valores.formataMoedaSemCifrao(produto.getComprimento()));
+			}
+			//Peso
+			if(produto.getPeso() == 0){
+				this.setPesoStr("");
+			}else{
+				this.setPesoStr(Valores.formataMoedaSemCifrao(produto.getPeso()));
+			}
+			//Itens Produto
+			if(produto.getItensProduto() != null){
+				this.setQuantidade(produto.getItensProduto().size());
+			}
+			this.setTerDesconto(produto.isAplicarDesconto());
+			this.setTerDestaque(produto.isDestaque());
+		}
+		
+	}
 	public FormProduto(Produto produto) {
-		this.setId(produto.getId());
-		this.setDescricao(produto.getDescricao());
-		this.setCategoria(produto.getCategoria());
-		this.setSubcategoria(produto.getSubcategoria());
-		this.setEstoques(produto.getEstoques());
-		this.setTamanhoLetra(produto.getTamanhoLetra());
-		this.setTamanhoNumerico(produto.getTamanhoNumerico());
-		this.setImagemProduto1(produto.getImagemProduto1());
-		this.setImagemProduto2(produto.getImagemProduto2());
-		this.setValor(produto.getValor());
-
+		this.addProduto(produto);
+		
 	}
 
 	// then use Spring BeanUtils to copy and ignore null
@@ -93,10 +190,51 @@ public class FormProduto extends Produto {
 	}
 
 	
-	public final static Produto valueOf(Produto produto) {
+	public final static Produto valueOf(FormProduto formProduto) {
 
 		Produto produtoNovo = new Produto();
-		myCopyProperties(produto, produtoNovo);
+		myCopyProperties(formProduto, produtoNovo);
+		if(formProduto != null){
+			String pesoStr = Valores.desformataMoeda(formProduto.pesoStr);
+			String larguraStr = Valores.desformataMoeda(formProduto.larguraStr);
+			String alturaStr = Valores.desformataMoeda(formProduto.alturaStr);
+			String comprimentoStr = Valores.desformataMoeda(formProduto.comprimentoStr);
+			String valorStr = Valores.desformataMoeda(formProduto.valorStr);
+			String percentualDesconto = Valores.desformataMoeda(formProduto.descontoPercentualStr);
+			produtoNovo.setAplicarDesconto(formProduto.isTerDesconto());
+			produtoNovo.setDestaque(formProduto.isTerDesconto());
+			//peso
+			if(Valores.isDouble(pesoStr)){
+				double peso = Double.valueOf(pesoStr);
+				produtoNovo.setPeso(peso);
+			}
+			//largura
+			if(Valores.isDouble(larguraStr)){
+				double largura = Double.valueOf(larguraStr);
+				produtoNovo.setLargura(largura);
+			}
+			//altura
+			if(Valores.isDouble(alturaStr)){
+				double altura = Double.valueOf(alturaStr);
+				produtoNovo.setAltura(altura);
+			}
+			//comprimento
+			if(Valores.isDouble(comprimentoStr)){
+				double comprimento = Double.valueOf(comprimentoStr);
+				produtoNovo.setComprimento(comprimento);
+			}
+			//Valor
+			if(Valores.isDouble(valorStr)){
+				BigDecimal valorBigDecimal = new BigDecimal(valorStr);
+				produtoNovo.setValor(valorBigDecimal);
+			}
+			if(Valores.isDouble(percentualDesconto)){
+				BigDecimal valorPercentualDesconto = new BigDecimal(percentualDesconto);
+				produtoNovo.setDescontoPercentual(valorPercentualDesconto);
+				
+			}
+			
+		}
 		/*
 		if (produto.getId() != 0) {
 			produtoNovo.setId(produto.getId());
@@ -137,6 +275,22 @@ public class FormProduto extends Produto {
 			*/
 		return produtoNovo;
 
+	}
+
+	public boolean isTerDesconto() {
+		return terDesconto;
+	}
+
+	public void setTerDesconto(boolean terDesconto) {
+		this.terDesconto = terDesconto;
+	}
+
+	public boolean isTerDestaque() {
+		return terDestaque;
+	}
+
+	public void setTerDestaque(boolean terDestaque) {
+		this.terDestaque = terDestaque;
 	}
 
 }

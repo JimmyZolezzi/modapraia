@@ -31,7 +31,7 @@ public class PesquisaProdutoController {
 	@JsonView(Public.class)
 	public List<Produto> pesquisaProdutos(Model model, @RequestParam("pesquisa") String pesquisa) {
 		
-		List<Produto> produtos = produtoBusiness.pesquisaProdutos(pesquisa, 10);
+		List<Produto> produtos = produtoBusiness.pesquisaProdutos(pesquisa, 6);
 		return produtos;
 		
 	}

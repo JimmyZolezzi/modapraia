@@ -18,7 +18,7 @@ public class ProdutoEditor  extends PropertyEditorSupport {
 	public void setAsText(String id) throws IllegalArgumentException {
 		
 		Produto produto = null;
-		if(id != null && !id.equals("") && id.matches("[0-9]*")){
+		if(id != null && !id.equals("") && id.matches("[0-9].*")){
 			long idProduto = Long.parseLong(id);
 			
 			produto = produtoBusiness.pesquisarProduto(idProduto);

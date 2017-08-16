@@ -20,5 +20,6 @@ public class TestProdutoJson {
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonProduto = mapper.writeValueAsString(produto);
 		System.out.println(jsonProduto);
+		
 	}
 }

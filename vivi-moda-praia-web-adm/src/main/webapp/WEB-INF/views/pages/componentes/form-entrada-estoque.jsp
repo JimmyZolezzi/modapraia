@@ -17,61 +17,71 @@
 			${formEntradaEstoque.nomeItem}
 		</div>
 		<div class="form-group">
+			<input type="hidden" id="idItemEstoque" value="${itemProdutoEstoque.idItemEstoque }"> 
 			<label for="itemProdutoEstoque.tipoMedida">Tipo Medida: </label>
 			${formEntradaEstoque.itemProdutoEstoque.tipoMedida}
 		</div>
 		<spring:bind path="itemProdutoEstoque.tamanho">
 			<div id="linkNovaMedida" class="" >
-				<a onclick="novaMedidaNumerica()" >Nova medida</a><br/>
+				<c:if test="${not empty itemProduto.mapItemProdutoEstoque  }">
+					<a onclick="novaMedidaNumerica()" >Nova medida</a><br/>
+				</c:if>
 			</div>
 			<div id="linkListaMedidas"  class="none">
 				<a onclick="mostrarListaMedidas()">Lista de Medidas</a><br/>
 			</div>
+			
 			<div class="form-group ${status.error?'has-error':''} ">
 				
 				<label for="itemProdutoEstoque.tamanho">Tamanho</label>
 				
-				<c:if test="${empty itemProduto.itensEstoque && formEntradaEstoque.itemProdutoEstoque.tipoMedida ne 'LETRA'}">
+				<c:if test="${empty itemProduto.mapItemProdutoEstoque}">
 					<form:input path="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />
 				</c:if>
-				<input id="htmlTamanhoNumerico" type="hidden" value="" /> 
-				<div id="tamanhoNumericoCampo">
+				
+				<input id="htmlTamanho" type="hidden" value="" /> 
+				<div id="tamanhoCampo">
 
 				</div>
-				<div id="tamanhoNumerico">
-					<c:if test="${not empty itemProduto.itensEstoque && formEntradaEstoque.itemProdutoEstoque.tipoMedida ne 'LETRA'}">
-						<form:select id="tamanhoNumero" path="itemProdutoEstoque.tamanho">
-							<form:options itemLabel="tamanho" itemValue="tamanho" items="${itemProduto.itensEstoque}"/>
+				<c:if test="${not empty itemProduto.mapItemProdutoEstoque}">
+					<div id="divTamanho">
+						<form:select id="tamanho" class="form-control" path="itemProdutoEstoque.tamanho" onchange="mudarTamanhoSelecionado();">
+							<form:option value="">Selecionar</form:option>
+							<c:forEach var="item" items="${itemProduto.mapItemProdutoEstoque}">
+								<form:option value="${item.value.tamanho}">${item.value.tamanho}</form:option>
+							</c:forEach>
 						</form:select>
+					</div>
+				</c:if>
+			</div>
+		</spring:bind>
+		<c:if test="${not empty itemProduto.mapItemProdutoEstoque}">
+			<div class="form-group">
+				<label id="labelQuantiadeEstoque" for="itemProdutoEstoque.tipoMedida">
+					<c:if test="${formEntradaEstoque != null && formEntradaEstoque.itemProdutoEstoque != null && formEntradaEstoque.itemProdutoEstoque.quantidade !=0}">
+						Quantidade Estoque: 
+					</c:if>
+				</label>
+				<div id="quantidadeEstoquePecaSelecionada">
+					<c:if test="${formEntradaEstoque != null && formEntradaEstoque.itemProdutoEstoque != null && formEntradaEstoque.itemProdutoEstoque.quantidade !=0}">
+						${formEntradaEstoque.itemProdutoEstoque.quantidade}
 					</c:if>
 				</div>
-				
-				<c:if test="${formEntradaEstoque.itemProdutoEstoque.tipoMedida eq 'LETRA'}">
-					<form:select id="tamanhoLetra" path="itemProdutoEstoque.tamanho" onchange="selecionarItemProdutoEstoqueNumero(${itemProduto.id}, ${idProduto})">
-						<form:option value="">selecionar</form:option>
-						<form:options items="${tamanhosLetra}"/>
-					</form:select>
-				</c:if>
-				
-				<label class="control-label" for="itemProdutoEstoque.tamanho">
-				<form:errors path="itemProdutoEstoque.tamanho"/></label>	
 			</div>
-		</spring:bind>
-		<div class="form-group">
-			<label for="itemProdutoEstoque.tipoMedida">Quantidade Estoque: </label>
-			${formEntradaEstoque.itemProdutoEstoque.quantidade}
+		</c:if>
+		<div id="divEntrada" style="${empty itemProduto.mapItemProdutoEstoque || formEntradaEstoque.itemProdutoEstoque != null && formEntradaEstoque.itemProdutoEstoque.tamanho != null && formEntradaEstoque.itemProdutoEstoque.tamanho ne '' ?'':'display: none'}">
+			<spring:bind path="itemProdutoEstoque.quantidade">
+				<div class="form-group ${status.error?'has-error':''} ">
+					<label for="itemProdutoEstoque.quantidade">QTD entrada</label>
+					<form:input path="quantidadeEntrada" type="text" class="form-control" id="quantidadeEntrada" placeholder="QTD Entrada" />
+					<label class="control-label" for="quantidadeEntrada">
+					<form:errors path="quantidadeEntrada"/></label>	
+				</div>
+			</spring:bind>
+			<button type="submit" class="btn btn-primary">
+				<span class="glyphicon glyphicon-floppy-disk"> Entrada Estoque</span>
+			</button>
 		</div>			
-		<spring:bind path="itemProdutoEstoque.quantidade">
-			<div class="form-group ${status.error?'has-error':''} ">
-				<label for="itemProdutoEstoque.quantidade">QTD entrada</label>
-				<form:input path="quantidadeEntrada" type="text" class="form-control" id="quantidadeEntrada" placeholder="QTD Entrada" />
-				<label class="control-label" for="quantidadeEntrada">
-				<form:errors path="quantidadeEntrada"/></label>	
-			</div>
-		</spring:bind>
-		<button type="submit" class="btn btn-primary">
-			<span class="glyphicon glyphicon-floppy-disk"> Entrada Estoque</span>
-		</button>
 		<br/><br/>
 		<div class="alert ${css}">
 		  ${msg}
@@ -82,6 +92,14 @@
 
 
 function selecionarItemProdutoEstoqueNumero(idItemProduto,idProduto){
+	
+	var csrfParameter = document.head.querySelector("meta[name='_csrf_parameter']").content;
+	var csrfHeader = document.head.querySelector("meta[name='_csrf_header']").content;
+	var csrfToken = document.head.querySelector("meta[name='_csrf']").content;
+	var home = document.getElementById('home').getAttribute('value');
+	var headers = {};
+	headers[csrfHeader] = csrfToken;
+	
 	var url = "selecionar/item/produto/estoque";
 	var tamanhoLetra = document.getElementById("tamanhoLetra").value;
 	var tamanho = tamanhoLetra;
@@ -90,6 +108,7 @@ function selecionarItemProdutoEstoqueNumero(idItemProduto,idProduto){
 	$.ajax({
 	    url: $home + url,
 	    type: 'GET',
+	    headers: headers,
 	    data: data,
 	    async: true,
 	    success: function (returndata) {
@@ -108,9 +127,18 @@ $("#form").submit(function(event) {
 	// let's select and cache all the fields
 	// serialize the data in the form
 	// fire off the request to /action
+	
+	var csrfParameter = document.head.querySelector("meta[name='_csrf_parameter']").content;
+	var csrfHeader = document.head.querySelector("meta[name='_csrf_header']").content;
+	var csrfToken = document.head.querySelector("meta[name='_csrf']").content;
+	var home = document.getElementById('home').getAttribute('value');
+	var headers = {};
+	headers[csrfHeader] = csrfToken;
+	
 	$.ajax({
 	    url: $form.attr('action'),
 	    type: 'POST',
+	    headers: headers,
 	    data: formData,
 	    async: true,
 	    cache: false,
@@ -123,14 +151,59 @@ $("#form").submit(function(event) {
     });
 });
 
+function mudarTamanhoSelecionado(){
+	var tamanho = document.getElementById('tamanho').value;
+	//verifica tamanho numero nao existe
+	var idItemEstoque = document.getElementById('idItemEstoque').value;
+	var url = "/atualizar/quantidadeEstoque/produtoSelecionado";
+	var data = "tamanho=" + tamanho +  '&idItemProduto=' + idItemEstoque;
+	var $home = $('#home').attr('value');
+	var csrfParameter = document.head.querySelector("meta[name='_csrf_parameter']").content;
+	var csrfHeader = document.head.querySelector("meta[name='_csrf_header']").content;
+	var csrfToken = document.head.querySelector("meta[name='_csrf']").content;
+	var headers = {};
+	headers[csrfHeader] = csrfToken;
+	
+	$.ajax({
+	    url: $home + url,
+	    type: 'GET',
+	    headers: headers,
+	    data: data,
+	    async: true,
+	    success: function (returndata) {
+	    	if(returndata != null && returndata != '0'){
+	    		$("#labelQuantiadeEstoque").html('Quantidade Estoque: ');
+	    		$("#quantidadeEstoquePecaSelecionada").html(returndata);
+	    		$("#divEntrada").attr('style','');
+	    		
+	    	}else{
+	    		$("#labelQuantiadeEstoque").html('');
+	    		$("#quantidadeEstoquePecaSelecionada").html('');
+	    		$("#divEntrada").attr('style','display:none');
+	    		
+	    	}
+	    }
+  	});
+	
+}
+
+
 function atualizarPecasSelecionadas(idProduto){
 	
 	var url = "/atualizar/pecas/estoque";
 	var data = "idProduto=" + idProduto;
 	var $home = $('#home').attr('value');
+	var csrfParameter = document.head.querySelector("meta[name='_csrf_parameter']").content;
+	var csrfHeader = document.head.querySelector("meta[name='_csrf_header']").content;
+	var csrfToken = document.head.querySelector("meta[name='_csrf']").content;
+	var home = document.getElementById('home').getAttribute('value');
+	var headers = {};
+	headers[csrfHeader] = csrfToken;
+	
 	$.ajax({
 	    url: $home + url,
 	    type: 'GET',
+	    headers: headers,
 	    data: data,
 	    async: true,
 	    success: function (returndata) {
@@ -140,33 +213,39 @@ function atualizarPecasSelecionadas(idProduto){
 }
 function novaMedidaNumerica(){
 	
-	var htmlTamanhoNumericoCampo = '<input name="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />';
-	var tamanhoNumericoCampo = document.getElementById("tamanhoNumericoCampo");
-	var tamanhoNumerico = document.getElementById("tamanhoNumerico");
-	var htmlTamanhoNumericoHidden = document.getElementById("htmlTamanhoNumerico");
+	var htmlTamanhoCampo = '<input name="itemProdutoEstoque.tamanho" type="text" class="form-control" id="tamanho" placeholder="Tamanho" />';
+	var tamanhoCampo = document.getElementById("tamanhoCampo");
+	var divTamanho  = document.getElementById("divTamanho");
+	var htmlTamanhoHidden = document.getElementById("htmlTamanho");
 	
-	$(tamanhoNumericoCampo).html(htmlTamanhoNumericoCampo);
-	htmlTamanhoNumericoHidden.value = tamanhoNumerico.innerHTML;
-	$(tamanhoNumerico).html('');
+	$(tamanhoCampo).html(htmlTamanhoCampo);
+	htmlTamanhoHidden.value = divTamanho.innerHTML;
+	$(divTamanho).html('');
 	
 	var linkNovaMedida = document.getElementById("linkNovaMedida");
 	var linkListaMedidas = document.getElementById("linkListaMedidas");
 	linkNovaMedida.classList.add("none");
 	linkListaMedidas.classList.remove("none");
+	$("#divEntrada").attr('style','');
+	$("#labelQuantiadeEstoque").html('');
+	$("#quantidadeEstoquePecaSelecionada").html('');
 }
 function mostrarListaMedidas(){
 	
-	var tamanhoNumericoCampo = document.getElementById("tamanhoNumericoCampo");
-	var tamanhoNumerico = document.getElementById("tamanhoNumerico");
-	var htmlTamanhoNumericoHidden = document.getElementById("htmlTamanhoNumerico");
-	$(tamanhoNumerico).html(htmlTamanhoNumericoHidden.value);
-	$(tamanhoNumericoCampo).html('');
+	var tamanhoCampo = document.getElementById("tamanhoCampo");
+	var divTamanho = document.getElementById("divTamanho");
+	var htmlTamanhoHidden = document.getElementById("htmlTamanho");
+	$(divTamanho).html(htmlTamanhoHidden.value);
+	$(tamanhoCampo).html('');
 	
 	var linkNovaMedida = document.getElementById("linkNovaMedida");
 	var linkListaMedidas = document.getElementById("linkListaMedidas");
 	
 	linkNovaMedida.classList.remove("none");
 	linkListaMedidas.classList.add("none");
+	$("#divEntrada").attr('style','display:none');
+	$("#labelQuantiadeEstoque").html('');
+	$("#quantidadeEstoquePecaSelecionada").html('');
 	
 }
 

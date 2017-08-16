@@ -284,15 +284,20 @@
 	<classpathentry kind="lib" path="lib/spring-websocket-4.3.6.RELEASE-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/spring-websocket-4.3.6.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-websocket-4.3.6.RELEASE.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/spring-security-acl-4.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-security-config-4.2.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-security-core-4.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-security-taglibs-4.2.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-security-web-4.2.2.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.5">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.utility"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_121">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

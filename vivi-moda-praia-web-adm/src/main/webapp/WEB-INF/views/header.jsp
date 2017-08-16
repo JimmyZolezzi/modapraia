@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!-- Navigation -->
-<!-- Navigation -->
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -143,7 +140,7 @@
               <a href="javascript:;" data-toggle="collapse" data-target="#produtos"><i class="fa fa-fw fa-arrows-v"></i> Produtos <i class="fa fa-fw fa-caret-down"></i></a>
               <ul id="produtos" class="collapse">
                   <li>
-                      <a href="<c:url value="/cadastro-produto" />">Produto</a>
+                      <a href="<c:url value="/lista/produtos/pages/1" />">Produto</a>
                   </li>
                   <li>
                       <a href="<c:url value="/cadastro-categoria" />">Categoria</a>

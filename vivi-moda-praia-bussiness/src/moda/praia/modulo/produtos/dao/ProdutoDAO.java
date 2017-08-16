@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import moda.praia.modulo.produtos.bean.ItemProdutoEstoque;
 import moda.praia.modulo.produtos.bean.Produto;
 import moda.praia.modulo.produtos.bean.Subcategoria;
 
@@ -26,7 +27,43 @@ public class ProdutoDAO {
 	}
 	
 	public void alteraProduto(Produto produto){
-		em.merge(produto);
+		
+		if(produto != null && produto.getId() != 0){
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("update Produto p set p.descricao = :descricao, p.informacoes =:informacoes, p.valor =:valor,");
+			sb.append("p.descontoValor =:descontoValor, p.descontoPercentual =:descontoPercentual, p.categoria =:categoria, ");
+			sb.append("p.subcategoria =:subcategoria, p.imagemProduto1 =:imagemProduto1, p.imagemProduto2 =:imagemProduto2, ");
+			sb.append("p.comprimento =:comprimento, p.altura =:altura, p.largura =:largura, p.corPredominante =:corPredominante, p.peso =:peso, ");
+			sb.append("p.aplicarDesconto =:aplicarDesconto ");
+			sb.append("where p.id =:idProduto");
+			
+			String query = sb.toString();
+			
+			Query queryUpdate = em.createQuery(query);
+			
+			queryUpdate.setParameter("descricao", produto.getDescricao());
+			queryUpdate.setParameter("informacoes", produto.getInformacoes());
+			queryUpdate.setParameter("valor", produto.getValor());
+			queryUpdate.setParameter("descontoValor", produto.getDescontoValor());
+			queryUpdate.setParameter("descontoPercentual", produto.getDescontoPercentual());
+			queryUpdate.setParameter("categoria", produto.getCategoria());
+			queryUpdate.setParameter("subcategoria", produto.getSubcategoria());
+			queryUpdate.setParameter("descontoValor", produto.getDescontoValor());
+			queryUpdate.setParameter("imagemProduto1", produto.getImagemProduto1());
+			queryUpdate.setParameter("imagemProduto2", produto.getImagemProduto2());
+			queryUpdate.setParameter("comprimento", produto.getComprimento());
+			queryUpdate.setParameter("altura", produto.getAltura());
+			queryUpdate.setParameter("largura", produto.getLargura());
+			queryUpdate.setParameter("corPredominante", produto.getCorPredominante());
+			queryUpdate.setParameter("peso", produto.getPeso());
+			queryUpdate.setParameter("aplicarDesconto", produto.isAplicarDesconto());
+			
+			//Id Produto
+			queryUpdate.setParameter("idProduto", produto.getId());
+			queryUpdate.executeUpdate();
+		}
+		
 	}
 	
 	public void removeProduto(Produto produto){
@@ -47,6 +84,23 @@ public class ProdutoDAO {
 		query.setParameter("idProduto", id);
 	    
 		return (Produto) query.getSingleResult();
+	}
+	
+	public Produto buscaProdutoCarrinhoPorId(long id) {
+		Query query = em.createQuery("select p from Produto p left JOIN FETCH p.categoria left JOIN FETCH p.subcategoria left JOIN FETCH p.imagemProduto1 left JOIN FETCH p.imagemProduto2 where p.id =:idProduto");
+		query.setParameter("idProduto", id);
+	    Produto produto  = (Produto) query.getSingleResult();
+	  
+		return produto;
+	}
+	
+	public List<ItemProdutoEstoque> buscaItemProdutoEstoque(long idItemProduto){
+		
+		Query queryItemProdutoEstoque = em.createQuery("select ipe from ItemProdutoEstoque ipe  where ipe.id =:idItemProduto and ipe.quantidade > 0");
+		queryItemProdutoEstoque.setParameter("idItemProduto", idItemProduto);
+		
+		return queryItemProdutoEstoque.getResultList();
+		
 	}
 	
 	public Produto buscaPorIdEagerImagensProduto(long id) {

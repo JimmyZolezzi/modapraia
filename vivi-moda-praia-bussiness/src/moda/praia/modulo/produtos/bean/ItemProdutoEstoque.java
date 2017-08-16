@@ -35,7 +35,9 @@ public class ItemProdutoEstoque implements Serializable {
 	private String tamanho;
 	@JsonProperty(value = "quantidade")
 	private int quantidade;
-
+	@JsonProperty(value = "quantidadeReservada")
+	private int quantidadeReservada;
+	
 	public long getId() {
 		return id;
 	}
@@ -59,6 +61,12 @@ public class ItemProdutoEstoque implements Serializable {
 	}
 	public void setQuantidade(int quantidade) {
 		this.quantidade = quantidade;
+	}
+	public int getQuantidadeReservada() {
+		return quantidadeReservada;
+	}
+	public void setQuantidadeReservada(int quantidadeReservada) {
+		this.quantidadeReservada = quantidadeReservada;
 	}
 	@Override
 	public int hashCode() {

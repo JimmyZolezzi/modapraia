@@ -1,5 +1,6 @@
 package moda.praia.modulo.produtos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,9 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,21 +37,26 @@ import moda.praia.modulo.produtos.repositorios.ProdutoRepository;
 @Transactional
 public class ProdutoBusinessImpl implements ProdutoBusiness{
 
+	private static final int PAGE_SIZE = 10;
+	
 	private final Logger log = Logger.getLogger(ProdutoBusinessImpl.class);
 	
 	private final CategoriaDAO categoriaDAO;
 	private final SubCategoriaDAO subCategoriaDAO;
 	private final ImagemProdutoDAO imagemProdutoDAO;
 	private final ProdutoDAO produtoDAO;
+	private final ProdutoRepository produtoRepository;
 	private final ItemProdutoRepository itemProdutoRepository;
 	@Autowired
 	public ProdutoBusinessImpl(CategoriaDAO categoriaDAO, SubCategoriaDAO subCategoriaDAO, 
-			ProdutoDAO produtoDAO,ImagemProdutoDAO imagemProdutoDAO, ItemProdutoRepository itemProdutoRepository){
+			ProdutoDAO produtoDAO,ImagemProdutoDAO imagemProdutoDAO, ItemProdutoRepository itemProdutoRepository, 
+			ProdutoRepository produtoRepository){
 		this.categoriaDAO = categoriaDAO;
 		this.subCategoriaDAO = subCategoriaDAO;
 		this.imagemProdutoDAO = imagemProdutoDAO;
 		this.produtoDAO = produtoDAO;
 		this.itemProdutoRepository = itemProdutoRepository;
+		this.produtoRepository = produtoRepository;
 	}
 	
 	
@@ -55,8 +64,21 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 	public boolean cadastrarProduto(Produto produto) {
 		
 		try{
-			produtoDAO.adicionaProduto(produto);
-			return true;
+			if(produto != null){
+				BigDecimal descontoPercentual = produto.getDescontoPercentual();
+				BigDecimal valor = produto.getValor();
+				if(produto.getDescontoPercentual() != null && produto.getValor() != null){
+					BigDecimal valorDesconto =calcularValorProdutoComDesconto(valor, descontoPercentual);
+					produto.setDescontoValor(valorDesconto);
+				}
+				produtoDAO.adicionaProduto(produto);
+				
+				return true;
+				
+			}
+			
+			return false;
+			
 		}catch(Exception e){
 			log.error("Erro ao cadastrar produto: " + e);
 			return false;
@@ -263,9 +285,21 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 
 		try{
 			Produto produtoManaged = produtoDAO.buscaPorIdEager(produto.getId());
-			myCopyProperties(produto, produtoManaged);
-			
-			produtoDAO.alteraProduto(produtoManaged);
+			//Calcular valor de desconto 
+			if(produto != null){
+				
+				BigDecimal descontoPercentual = produto.getDescontoPercentual();
+				BigDecimal valor = produto.getValor();
+				if(produto.getDescontoPercentual() != null && produto.getValor() != null){
+					BigDecimal valorDesconto =calcularValorProdutoComDesconto(valor, descontoPercentual);
+					produto.setDescontoValor(valorDesconto);
+				}
+				
+				myCopyProperties(produto, produtoManaged);
+				
+				produtoDAO.alteraProduto(produtoManaged);
+				
+			}
 			return true;
 		
 		}catch(Exception e){
@@ -342,20 +376,17 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 	public boolean cadastrarImagemProduto(Produto produto, ImagemProduto imagemProduto) {
 		try{
 			if(produto != null && imagemProduto !=null){
+				produto = produtoDAO.buscaPorIdEager(produto.getId());
+
 				List<ImagemProduto> imagensProduto = produto.getImagensProduto();
-				imagemProdutoDAO.adicionaImagem(imagemProduto);
+
 				if(imagensProduto == null){
 					imagensProduto = new ArrayList<ImagemProduto>();
 					produto.setImagensProduto(imagensProduto);
 				}
-
-				Produto produtoManaged = produtoDAO.buscaPorIdEager(produto.getId());
-
-				produtoDAO.refresh(produtoManaged);
-				imagensProduto.add(imagemProduto);
-				myCopyProperties(produto, produtoManaged);
 				
-				produtoDAO.alteraProduto(produtoManaged);
+				imagensProduto.add(imagemProduto);
+				produtoDAO.alteraProduto(produto);
 				
 				return true;
 			}
@@ -407,6 +438,42 @@ public class ProdutoBusinessImpl implements ProdutoBusiness{
 			log.error("erro ao pesquisar item produto" + e.getStackTrace());
 		}
 		return null;
+	}
+
+
+	@Override
+	public Produto pesquisaProdutoCarrinho(long id) {
+		
+		try{
+			return produtoDAO.buscaProdutoCarrinhoPorId(id);
+			
+		}catch(Exception e){
+			log.error("Erro ao pesquisar produto: " + e);
+		}
+		
+		return null;
+	}
+
+
+	@Override
+	public BigDecimal calcularValorProdutoComDesconto(BigDecimal valorProduto, BigDecimal percenutalDesconto) {
+		
+		return valorProduto.subtract(valorProduto.multiply(percenutalDesconto.divide(new BigDecimal(100))));
+	}
+
+
+	@Override
+	public Page<Produto> pesquisaProdutos(Integer pageNumber) {
+		PageRequest request = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "descricao");
+		return produtoRepository.findAll(request);
+	}
+
+
+	@Override
+	public Page<Produto> pesquisaProdutosDestaque(Integer pageNumber) {
+		PageRequest request = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "descricao");
+		// TODO Auto-generated method stub
+		return produtoRepository.findByDestaque(true, request);
 	}
 
 

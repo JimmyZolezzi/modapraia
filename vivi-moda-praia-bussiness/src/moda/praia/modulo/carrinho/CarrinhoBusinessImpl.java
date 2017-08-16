@@ -46,7 +46,7 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 			produtoPedido.setValorUnitario(produto.getValor());
 			BigDecimal valorTotal = BigDecimal.ZERO;
 			valorTotal = produto.getValor().multiply(new BigDecimal(quantidade));
-			produtoPedido.setValorToral(valorTotal);
+			produtoPedido.setValorTotal(valorTotal);
 			mapProdutoPedidos.put(String.valueOf(produto.getId()), produtoPedido);
 		}
 	}
@@ -60,10 +60,11 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 		for (String chave : chavesProdutoPedido) {
 			ProdutoPedido produtoPedido = mapProdutoPedidos.get(chave);
 			listaProdutoPedido.add(produtoPedido);
-			totalProdutos = totalProdutos.add(produtoPedido.getValorToral());
+			totalProdutos = totalProdutos.add(produtoPedido.getValorTotal());
 		}
 		pedido.setProdutosPedido(listaProdutoPedido);
 		pedido.setValorProdutos(totalProdutos);
+		pedido.setValorTotal(totalProdutos);
 	}
 	
 	
@@ -91,8 +92,34 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 	public void colocarProdutoCarrinho(ProdutoPedido produtoPedido) {
 		
 		if(produtoPedido != null && produtoPedido.getProduto() != null && produtoPedido.getQuantidade() !=0){
+			Produto produto = produtoPedido.getProduto();
+			
+			
+			if(!produto.isAplicarDesconto()){
+				produtoPedido.setValorUnitario(produto.getValor());
+				BigDecimal valorTotalProduto = produto.getValor().multiply(new BigDecimal(produtoPedido.getQuantidade()));
+				produtoPedido.setValorTotal(valorTotalProduto);
+			}else{
+				produtoPedido.setValorUnitario(produto.getDescontoValor());
+				BigDecimal valorTotalProduto = produto.getDescontoValor().multiply(new BigDecimal(produtoPedido.getQuantidade()));
+				produtoPedido.setValorTotal(valorTotalProduto);
+			}
+			
 			String chave = obterChaveProdutoPedido(produtoPedido);
 			produtoPedido.setChave(chave);
+			
+			ProdutoPedido produtoPedidoArmazenado = mapProdutoPedidos.get(chave);
+			if(produtoPedidoArmazenado != null){
+				double quantidadeArmazenada = produtoPedidoArmazenado.getQuantidade();
+				double quantidadeProdutoPedido = produtoPedido.getQuantidade();
+				quantidadeArmazenada = quantidadeArmazenada + quantidadeProdutoPedido;
+				
+				BigDecimal totalProdutoPedido = produtoPedidoArmazenado.getValorUnitario().multiply(new BigDecimal(quantidadeArmazenada));
+				produtoPedido.setQuantidade(quantidadeArmazenada);
+				produtoPedido.setValorTotal(totalProdutoPedido);
+				
+			}
+			
 			mapProdutoPedidos.put(chave, produtoPedido);
 		}
 		
@@ -125,9 +152,9 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 		
 		BigDecimal total = new BigDecimal(0);
 		total = total.add(produtoPedido.getValorUnitario()).multiply(new BigDecimal(quantidade));
-		produtoPedido.setValorToral(total);
+		produtoPedido.setValorTotal(total);
 		preencherPedido();
-		calcularFretePedido(cep);
+		//calcularFretePedido(cep);
 		
 	}
 
@@ -175,7 +202,6 @@ public class CarrinhoBusinessImpl implements CarrinhoBusiness {
 			String sCdAvisoRecebimento = "S";
 	        
 	        CResultado cresultado = calcPrecoPrazoWSSoap.calcPrecoPrazo(nCdEmpresa, sDsSenha, nCdServico, sCepOrigem, sCepDestino, nVlPeso, nCdFormato, nVlComprimento, nVlAltura, nVlLargura, nVlDiametro, sCdMaoPropria, nVlValorDeclarado, sCdAvisoRecebimento);
-	        
 	        if(cresultado != null && cresultado.getServicos() !=null && cresultado.getServicos().getCServico() !=null && cresultado.getServicos().getCServico().size()>=1){
 	        	
 	        	String valorFreteString =  cresultado.getServicos().getCServico().get(0).getValor();
